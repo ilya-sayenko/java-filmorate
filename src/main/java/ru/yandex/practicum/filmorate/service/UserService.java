@@ -17,7 +17,9 @@ public class UserService {
     }
 
     public User create(User user) {
-        data.put(user.getId(), user);
+        int id = data.size() + 1;
+        user.setId(id);
+        data.put(id, user);
         return user;
     }
 

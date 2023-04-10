@@ -17,7 +17,9 @@ public class FilmService {
     }
 
     public Film create(Film film) {
-        data.put(film.getId(), film);
+        int id = data.size() + 1;
+        film.setId(id);
+        data.put(id, film);
         log.info("film created");
         return film;
     }

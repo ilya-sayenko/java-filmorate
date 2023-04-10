@@ -4,10 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
@@ -21,6 +18,6 @@ public class User {
     private String login;
     @Nullable
     private String name;
-    @Past
+    @PastOrPresent
     private LocalDate birthday;
 }

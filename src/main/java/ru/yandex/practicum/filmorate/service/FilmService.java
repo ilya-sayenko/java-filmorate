@@ -7,20 +7,23 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
+import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+
 @Service
 @Slf4j
 public class FilmService {
     private final Map<Integer, Film> data = new HashMap<>();
+    private static int id;
 
     public List<Film> findAll() {
+        log.info(FIND_ALL_FILMS.getMessage());
         return new ArrayList<>(data.values());
     }
 
     public Film create(Film film) {
-        int id = data.size() + 1;
-        film.setId(id);
+        film.setId(++id);
         data.put(id, film);
-        log.info("film created");
+        log.info(FILM_CREATED.getMessage());
         return film;
     }
 
@@ -28,7 +31,7 @@ public class FilmService {
         Optional<Film> filmFromData = Optional.ofNullable(data.get(film.getId()));
         if (filmFromData.isPresent()) {
             data.put(film.getId(), film);
-            log.info("film updated");
+            log.info(FILM_UPDATED.getMessage());
             return film;
         } else {
             throw new ValidationException("film with id=" + film.getId() + " is not found");

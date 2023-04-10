@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -29,10 +27,5 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         return filmService.update(film);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public void handleValidationException(MethodArgumentNotValidException ex) {
-        throw new ValidationException(ex.getMessage());
     }
 }

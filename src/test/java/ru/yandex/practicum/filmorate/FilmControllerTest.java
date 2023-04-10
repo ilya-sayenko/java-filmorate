@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,7 +40,7 @@ public class FilmControllerTest {
                 .name("Film")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         mockMvc.perform(
@@ -59,7 +58,7 @@ public class FilmControllerTest {
                 .name("")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         mockMvc.perform(
@@ -77,7 +76,7 @@ public class FilmControllerTest {
                         "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                         "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         mockMvc.perform(
@@ -92,7 +91,7 @@ public class FilmControllerTest {
                 .name("Name")
                 .description("Description")
                 .releaseDate(LocalDate.of(1700, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         mockMvc.perform(
@@ -107,7 +106,7 @@ public class FilmControllerTest {
                 .name("Name")
                 .description("Description")
                 .releaseDate(LocalDate.of(1700, 1, 1))
-                .duration(Duration.ofMinutes(-50))
+                .duration(-50)
                 .build();
 
         mockMvc.perform(

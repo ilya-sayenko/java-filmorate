@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +25,7 @@ public class FilmServiceTest {
                 .name("Film")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         filmService.create(film);
@@ -42,7 +41,7 @@ public class FilmServiceTest {
                 .name("Film")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         filmService.create(film);
@@ -52,7 +51,7 @@ public class FilmServiceTest {
                 .name("Film")
                 .description("New description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
         filmService.update(filmUpd);
@@ -67,7 +66,7 @@ public class FilmServiceTest {
                 .name("Film")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
-                .duration(Duration.ofMinutes(50))
+                .duration(50)
                 .build();
 
 

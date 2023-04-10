@@ -19,6 +19,9 @@ public class UserService {
     public User create(User user) {
         int id = data.size() + 1;
         user.setId(id);
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
         data.put(id, user);
         return user;
     }

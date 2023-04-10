@@ -1,11 +1,34 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.List;
+import java.util.*;
 
-public interface UserService {
-    List<User> findAll();
-    User create(User user);
-    User update(User user);
+@Service
+@Slf4j
+public class UserService {
+    private final Map<Integer, User> data = new HashMap<>();
+
+    public List<User> findAll() {
+        return new ArrayList<>(data.values());
+    }
+
+    public User create(User user) {
+        data.put(user.getId(), user);
+        return user;
+    }
+
+    public User update(User user) {
+        Optional<User> filmFromData = Optional.ofNullable(data.get(user.getId()));
+        if (filmFromData.isPresent()) {
+            data.put(user.getId(), user);
+            log.info("user updated");
+            return user;
+        } else {
+            throw new ValidationException("film with id=" + user.getId() + " is not found");
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class UserService {
             log.info(USER_UPDATED.getMessage());
             return user;
         } else {
-            throw new ValidationException("film with id=" + user.getId() + " is not found");
+            throw new ValidationException("user with id=" + user.getId() + " is not found");
         }
     }
 }

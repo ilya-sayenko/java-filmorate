@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
@@ -17,7 +18,7 @@ public class FilmService {
 
     public List<Film> findAll() {
         log.info(FIND_ALL_FILMS.getMessage());
-        return new ArrayList<>(data.values());
+        return data.values().stream().collect(Collectors.toUnmodifiableList());
     }
 
     public Film create(Film film) {

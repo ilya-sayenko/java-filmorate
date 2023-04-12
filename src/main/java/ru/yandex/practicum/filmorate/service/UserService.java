@@ -14,7 +14,7 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class UserService {
     private final Map<Integer, User> data = new HashMap<>();
-    private static int id;
+    private int id;
 
     private void changeUserNameIfNull(User user) {
         if (user.getName() == null) {
@@ -23,7 +23,6 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        log.info(FIND_ALL_USERS.getMessage());
         return data.values().stream().collect(Collectors.toUnmodifiableList());
     }
 

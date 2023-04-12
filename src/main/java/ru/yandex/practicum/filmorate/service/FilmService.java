@@ -14,10 +14,9 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class FilmService {
     private final Map<Integer, Film> data = new HashMap<>();
-    private static int id;
+    private int id;
 
     public List<Film> findAll() {
-        log.info(FIND_ALL_FILMS.getMessage());
         return data.values().stream().collect(Collectors.toUnmodifiableList());
     }
 

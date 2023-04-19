@@ -27,11 +27,6 @@ public class FilmControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @BeforeEach
-//    public void initialization() {
-//        filmController = new FilmController(new FilmService());
-//    }
-
     @Test
     public void contextLoads() {
         assertThat(filmController).isNotNull();

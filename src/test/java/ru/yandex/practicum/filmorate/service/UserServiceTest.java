@@ -1,22 +1,27 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-    UserService userService;
+    @InjectMocks
+    private UserService userService;
 
-    @BeforeEach
-    public void installations() {
-        userService = new UserService();
-    }
+    @Mock
+    private UserStorage userStorage;
 
     @Test
     public void shouldCreateUser() {
@@ -28,10 +33,9 @@ public class UserServiceTest {
                 .birthday(LocalDate.of(1990, 1, 1))
                 .build();
 
-        userService.create(user);
+        Mockito.when(userStorage.create(user)).thenReturn(user);
 
-        assertEquals(1, userService.findAll().size());
-        assertEquals(user, userService.findAll().get(0));
+        assertEquals(user, userService.create(user));
     }
 
     @Test
@@ -44,7 +48,7 @@ public class UserServiceTest {
                 .birthday(LocalDate.of(1990, 1, 1))
                 .build();
 
-        userService.create(user);
+        Mockito.doReturn(Optional.of(user)).when(userStorage).findById(1);
 
         User userUpd = User.builder()
                 .id(1)
@@ -54,9 +58,9 @@ public class UserServiceTest {
                 .birthday(LocalDate.of(1990, 1, 1))
                 .build();
 
-        userService.update(userUpd);
+        Mockito.when(userStorage.update(userUpd)).thenReturn(userUpd);
 
-        assertEquals(userUpd, userService.findAll().get(0));
+        assertEquals(userUpd, userService.update(userUpd));
     }
 
     @Test
@@ -69,8 +73,7 @@ public class UserServiceTest {
                 .birthday(LocalDate.of(1990, 1, 1))
                 .build();
 
-
-        assertThrows(ValidationException.class, () -> userService.update(user));
+        assertThrows(UserNotFoundException.class, () -> userService.update(user));
         assertTrue(userService.findAll().isEmpty());
     }
 }

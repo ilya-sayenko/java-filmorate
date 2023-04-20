@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ru.yandex.practicum.filmorate.validator.FilmReleaseDate;
 
 import javax.validation.constraints.NotBlank;
@@ -14,10 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
-public class Film {
-    private int id;
-
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Film extends Model {
     @NotBlank
     private String name;
 
@@ -34,6 +34,16 @@ public class Film {
     @EqualsAndHashCode.Exclude
     @JsonIgnore
     private Set<User> likes = new HashSet<>();
+
+    @Builder(builderMethodName = "filmBuilder")
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Set<User> likes) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.likes = likes;
+    }
 
     public void addLike(User user) {
         likes.add(user);

@@ -34,7 +34,7 @@ public class FilmControllerTest {
 
     @Test
     public void shouldAddFilm() throws Exception {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -52,7 +52,7 @@ public class FilmControllerTest {
 
     @Test
     public void shouldNotAddFilm() throws Exception {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("")
                 .description("Description")
@@ -67,7 +67,7 @@ public class FilmControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        film = Film.builder()
+        film = Film.filmBuilder()
                 .id(1)
                 .name("Name")
                 .description("11111111111111111111111111111111111111111111111111111111111111111111111111111111" +
@@ -85,7 +85,7 @@ public class FilmControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        film = Film.builder()
+        film = Film.filmBuilder()
                 .id(1)
                 .name("Name")
                 .description("Description")
@@ -100,7 +100,7 @@ public class FilmControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        film = Film.builder()
+        film = Film.filmBuilder()
                 .id(1)
                 .name("Name")
                 .description("Description")

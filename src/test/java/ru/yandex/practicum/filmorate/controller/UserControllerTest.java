@@ -28,7 +28,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldAddUser() throws Exception {
-        User user = User.builder()
+        User user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("login")
@@ -46,7 +46,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldNotAddUser() throws Exception {
-        User user = User.builder()
+        User user = User.userBuilder()
                 .id(1)
                 .email("example.ru")
                 .login("login")
@@ -61,7 +61,7 @@ public class UserControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        user = User.builder()
+        user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("")
@@ -76,7 +76,7 @@ public class UserControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        user = User.builder()
+        user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("log in")
@@ -91,7 +91,7 @@ public class UserControllerTest {
                 )
                 .andExpect(status().isBadRequest());
 
-        user = User.builder()
+        user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("login")

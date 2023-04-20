@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.impl.UserServiceImpl;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
@@ -18,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Mock
     private UserStorage userStorage;
 
     @Test
     public void shouldCreateUser() {
-        User user = User.builder()
+        User user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("login")
@@ -40,7 +41,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldUpdateUser() {
-        User user = User.builder()
+        User user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("login")
@@ -50,12 +51,11 @@ public class UserServiceTest {
 
         Mockito.doReturn(Optional.of(user)).when(userStorage).findById(1);
 
-        User userUpd = User.builder()
+        User userUpd = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("new_login")
-                .name("name")
-                .birthday(LocalDate.of(1990, 1, 1))
+                .name("name").birthday(LocalDate.of(1990, 1, 1))
                 .build();
 
         Mockito.when(userStorage.update(userUpd)).thenReturn(userUpd);
@@ -65,7 +65,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldNotUpdateUser() {
-        User user = User.builder()
+        User user = User.userBuilder()
                 .id(1)
                 .email("example@mail.ru")
                 .login("login")

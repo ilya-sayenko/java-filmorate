@@ -8,8 +8,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.service.impl.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,17 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class FilmServiceTest {
     @InjectMocks
-    private FilmService filmService;
+    private FilmServiceImpl filmService;
 
     @Mock
-    private UserStorage userStorage;
-
-    @Mock
-    private FilmStorage filmStorage;
+    private Storage<Film> filmStorage;
 
     @Test
     public void shouldCreateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -44,7 +41,7 @@ public class FilmServiceTest {
 
     @Test
     public void shouldUpdateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -52,7 +49,7 @@ public class FilmServiceTest {
                 .duration(50)
                 .build();
 
-        Film filmUpd = Film.builder()
+        Film filmUpd = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("New description")
@@ -68,7 +65,7 @@ public class FilmServiceTest {
 
     @Test
     public void shouldNotUpdateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")

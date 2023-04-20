@@ -25,14 +25,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(UserNotFoundException ex) {
-        log.warn(USER_NOT_FOUND.getMessage());
-        return new ErrorResponse("User not found", ex.getMessage());
+        String message = USER_NOT_FOUND.getMessage();
+        log.warn(message);
+        return new ErrorResponse(message, ex.getMessage());
     }
 
     @ExceptionHandler(FilmNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmNotFoundException(FilmNotFoundException ex) {
-        log.warn(FILM_NOT_FOUND.getMessage());
-        return new ErrorResponse("Film not found", ex.getMessage());
+        String message = FILM_NOT_FOUND.getMessage();
+        log.warn(message);
+        return new ErrorResponse(message, ex.getMessage());
     }
 }

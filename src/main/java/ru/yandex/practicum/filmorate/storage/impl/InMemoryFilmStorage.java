@@ -5,7 +5,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -15,7 +14,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() {
-        return data.values().stream().collect(Collectors.toUnmodifiableList());
+        return new ArrayList<>(data.values());
     }
 
     @Override

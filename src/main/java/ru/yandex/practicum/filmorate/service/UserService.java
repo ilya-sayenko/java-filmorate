@@ -7,7 +7,10 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
@@ -15,7 +18,14 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+    private final static Comparator<User> USER_COMPARATOR_BY_ID = Comparator.comparingInt(User::getId);
     private final UserStorage userStorage;
+
+    private void changeUserNameIfNull(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+    }
 
     public User findById(int id) throws UserNotFoundException {
         return userStorage.findById(id).orElseThrow(() -> new UserNotFoundException(id));
@@ -26,6 +36,7 @@ public class UserService {
     }
 
     public User create(User user) {
+        changeUserNameIfNull(user);
         User createdUser = userStorage.create(user);
         log.info(USER_CREATED.getMessage());
         return createdUser;
@@ -35,6 +46,7 @@ public class UserService {
         Optional<User> userFromData = userStorage.findById(user.getId());
         if (userFromData.isPresent()) {
             user.setFriends(userFromData.get().getFriends());
+            changeUserNameIfNull(user);
             userStorage.update(user);
             log.info(USER_UPDATED.getMessage());
             return user;
@@ -60,16 +72,16 @@ public class UserService {
     }
 
     public List<User> getFriends(int userId) {
-        List<User> friends = new ArrayList<>(findById(userId).getFriends());
-        friends.sort(Comparator.comparingInt(User::getId));
-
-        return friends;
+        return findById(userId).getFriends()
+                .stream()
+                .sorted(USER_COMPARATOR_BY_ID)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public List<User> getCommonFriends(int id, int otherId) {
-        Set<User> commonFriends = new HashSet<>(findById(id).getFriends());
-        commonFriends.retainAll(findById(otherId).getFriends());
-
-        return new ArrayList<>(commonFriends);
+        return findById(id).getFriends()
+                .stream()
+                .filter(user -> findById(otherId).getFriends().contains(user))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

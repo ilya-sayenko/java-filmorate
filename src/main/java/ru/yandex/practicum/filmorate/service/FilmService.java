@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,11 +21,12 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmService {
+    private static final Comparator<Film> FILM_COMPARATOR_BY_LIKES = (f1, f2) -> f2.getLikes().size() - f1.getLikes().size();
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
     public List<Film> findAll() {
-        return filmStorage.findAll();
+        return filmStorage.findAll().stream().collect(Collectors.toUnmodifiableList());
     }
 
     public Film findById(int id) {
@@ -66,7 +68,7 @@ public class FilmService {
     public List<Film> getPopular(int count) {
         return filmStorage.findAll()
                 .stream()
-                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
+                .sorted(FILM_COMPARATOR_BY_LIKES)
                 .limit(count)
                 .collect(Collectors.toList());
     }

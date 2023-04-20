@@ -23,25 +23,17 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
         }
-        changeUserNameIfNull(user);
         data.put(id, user);
         return user;
     }
 
     @Override
     public User update(User user) {
-        changeUserNameIfNull(user);
         return data.put(user.getId(), user);
     }
 
     @Override
     public Optional<User> findById(int id) {
         return Optional.ofNullable(data.get(id));
-    }
-
-    private void changeUserNameIfNull(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
     }
 }

@@ -24,6 +24,12 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping(value = "/{id}")
+    public User findById(@PathVariable int id) {
+        log.info(FIND_USER_BY_ID.getMessage());
+        return userService.findById(id);
+    }
+
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info(CREATE_USER.getMessage());
@@ -34,5 +40,29 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info(UPDATE_USER.getMessage());
         return userService.update(user);
+    }
+
+    @PutMapping(value = "/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info(ADD_FRIEND.getMessage());
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping(value = "/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info(DELETE_FRIEND.getMessage());
+        userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping(value = "/{id}/friends")
+    public List<User> getFriends(@PathVariable int id) {
+        log.info(GET_FRIENDS.getMessage());
+        return userService.getFriends(id);
+    }
+
+    @GetMapping(value = "/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info(GET_COMMON_FRIENDS.getMessage());
+        return userService.getCommonFriends(id, otherId);
     }
 }

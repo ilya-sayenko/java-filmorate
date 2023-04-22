@@ -1,40 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+public interface FilmService extends Service<Film> {
+    void addLike(int filmId, int userId);
 
-@Service
-@Slf4j
-public class FilmService {
-    private final Map<Integer, Film> data = new HashMap<>();
-    private int id;
+    void deleteLike(int filmId, int userId);
 
-    public List<Film> findAll() {
-        return data.values().stream().collect(Collectors.toUnmodifiableList());
-    }
-
-    public Film create(Film film) {
-        film.setId(++id);
-        data.put(id, film);
-        log.info(FILM_CREATED.getMessage());
-        return film;
-    }
-
-    public Film update(Film film) {
-        Optional<Film> filmFromData = Optional.ofNullable(data.get(film.getId()));
-        if (filmFromData.isPresent()) {
-            data.put(film.getId(), film);
-            log.info(FILM_UPDATED.getMessage());
-            return film;
-        } else {
-            throw new ValidationException("film with id=" + film.getId() + " is not found");
-        }
-    }
+    List<Film> getPopular(int count);
 }

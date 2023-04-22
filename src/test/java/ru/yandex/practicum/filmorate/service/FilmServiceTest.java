@@ -1,26 +1,32 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.impl.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class FilmServiceTest {
-    FilmService filmService;
+    @InjectMocks
+    private FilmServiceImpl filmService;
 
-    @BeforeEach
-    public void installations() {
-        filmService = new FilmService();
-    }
+    @Mock
+    private Storage<Film> filmStorage;
 
     @Test
     public void shouldCreateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -28,15 +34,14 @@ public class FilmServiceTest {
                 .duration(50)
                 .build();
 
-        filmService.create(film);
+        Mockito.when(filmStorage.create(film)).thenReturn(film);
 
-        assertEquals(1, filmService.findAll().size());
-        assertEquals(film, filmService.findAll().get(0));
+        assertEquals(film, filmService.create(film));
     }
 
     @Test
     public void shouldUpdateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -44,9 +49,7 @@ public class FilmServiceTest {
                 .duration(50)
                 .build();
 
-        filmService.create(film);
-
-        Film filmUpd = Film.builder()
+        Film filmUpd = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("New description")
@@ -54,14 +57,15 @@ public class FilmServiceTest {
                 .duration(50)
                 .build();
 
-        filmService.update(filmUpd);
+        Mockito.doReturn(Optional.of(film)).when(filmStorage).findById(1);
+        Mockito.when(filmStorage.update(filmUpd)).thenReturn(filmUpd);
 
-        assertEquals(filmUpd, filmService.findAll().get(0));
+        assertEquals(filmUpd, filmService.update(filmUpd));
     }
 
     @Test
     public void shouldNotUpdateFilm() {
-        Film film = Film.builder()
+        Film film = Film.filmBuilder()
                 .id(1)
                 .name("Film")
                 .description("Description")
@@ -69,8 +73,7 @@ public class FilmServiceTest {
                 .duration(50)
                 .build();
 
-
-        assertThrows(ValidationException.class, () -> filmService.update(film));
+        assertThrows(FilmNotFoundException.class, () -> filmService.update(film));
         assertTrue(filmService.findAll().isEmpty());
     }
 }

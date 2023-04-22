@@ -1,48 +1,15 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+public interface UserService extends Service<User> {
+    void addFriend(int userId, int friendId);
 
-@Service
-@Slf4j
-public class UserService {
-    private final Map<Integer, User> data = new HashMap<>();
-    private int id;
+    void deleteFriend(int userId, int friendId);
 
-    private void changeUserNameIfNull(User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-    }
+    List<User> getFriends(int userId);
 
-    public List<User> findAll() {
-        return data.values().stream().collect(Collectors.toUnmodifiableList());
-    }
-
-    public User create(User user) {
-        user.setId(++id);
-        changeUserNameIfNull(user);
-        data.put(id, user);
-        log.info(USER_CREATED.getMessage());
-        return user;
-    }
-
-    public User update(User user) {
-        Optional<User> filmFromData = Optional.ofNullable(data.get(user.getId()));
-        if (filmFromData.isPresent()) {
-            changeUserNameIfNull(user);
-            data.put(user.getId(), user);
-            log.info(USER_UPDATED.getMessage());
-            return user;
-        } else {
-            throw new ValidationException("user with id=" + user.getId() + " is not found");
-        }
-    }
+    List<User> getCommonFriends(int id, int otherId);
 }

@@ -15,6 +15,10 @@ public enum LogMessage {
     FIND_FILM_BY_ID,
     FIND_ALL_USERS,
     FIND_USER_BY_ID,
+    FIND_ALL_GENRES,
+    FIND_GENRE_BY_ID,
+    FIND_ALL_MPA,
+    FIND_MPA_BY_ID,
     ADD_LIKE,
     LIKE_ADDED,
     DELETE_LIKE,
@@ -28,7 +32,11 @@ public enum LogMessage {
     GET_COMMON_FRIENDS,
     VALIDATION_ERROR,
     USER_NOT_FOUND,
-    FILM_NOT_FOUND;
+    FILM_NOT_FOUND,
+    APPLICATION_ERROR,
+    MODEL_NOT_FOUND,
+    MPA_NOT_FOUND,
+    GENRE_NOT_FOUND;
 
     public String getMessage() {
         return StringUtils.capitalize(this.name().toLowerCase().replaceAll("_", " "));

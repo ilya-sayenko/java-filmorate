@@ -1,24 +1,26 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.springframework.lang.Nullable;
+import ru.yandex.practicum.filmorate.model.Model;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class User extends Model {
+@Builder(builderMethodName = "userBuilder")
+public class User implements Model {
+    private int id;
 
     @Email
     private String email;
@@ -38,21 +40,20 @@ public class User extends Model {
     @JsonIgnore
     private Set<User> friends = new HashSet<>();
 
-    @Builder(builderMethodName = "userBuilder")
-    public User(int id, String email, String login, @Nullable String name, LocalDate birthday, Set<User> friends) {
-        super(id);
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-        this.friends = friends;
-    }
-
     public void addFriend(User friend) {
         friends.add(friend);
     }
 
     public void deleteFriend(User friend) {
         friends.remove(friend);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("email", email);
+        values.put("login", login);
+        values.put("name", name);
+        values.put("birthday", birthday);
+        return values;
     }
 }

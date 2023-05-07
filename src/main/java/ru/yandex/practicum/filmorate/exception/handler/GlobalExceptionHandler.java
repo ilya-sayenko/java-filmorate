@@ -6,10 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.global.GlobalAppException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.response.ErrorResponse;
+import ru.yandex.practicum.filmorate.exception.response.ErrorResponse;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
@@ -22,19 +21,11 @@ public class GlobalExceptionHandler {
         throw new ValidationException(ex.getMessage());
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(GlobalAppException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(UserNotFoundException ex) {
-        String message = USER_NOT_FOUND.getMessage();
-        log.warn(message);
-        return new ErrorResponse(message, ex.getMessage());
-    }
-
-    @ExceptionHandler(FilmNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFilmNotFoundException(FilmNotFoundException ex) {
-        String message = FILM_NOT_FOUND.getMessage();
-        log.warn(message);
-        return new ErrorResponse(message, ex.getMessage());
+    public ErrorResponse handleGlobalAppException(GlobalAppException ex) {
+        String logMessage = ex.getLogMessage();
+        log.warn(logMessage);
+        return new ErrorResponse(logMessage, ex.getMessage());
     }
 }

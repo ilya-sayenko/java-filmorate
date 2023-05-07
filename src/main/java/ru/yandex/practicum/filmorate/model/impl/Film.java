@@ -1,23 +1,25 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import ru.yandex.practicum.filmorate.model.Model;
 import ru.yandex.practicum.filmorate.validator.FilmReleaseDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class Film extends Model {
+@Builder(builderMethodName = "filmBuilder")
+public class Film implements Model {
+    private int id;
     @NotBlank
     private String name;
 
@@ -35,15 +37,12 @@ public class Film extends Model {
     @JsonIgnore
     private Set<User> likes = new HashSet<>();
 
-    @Builder(builderMethodName = "filmBuilder")
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Set<User> likes) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.likes = likes;
-    }
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    private Set<Genre> genres = new HashSet<>();
+
+    @EqualsAndHashCode.Exclude
+    private Mpa mpa;
 
     public void addLike(User user) {
         likes.add(user);
@@ -51,5 +50,15 @@ public class Film extends Model {
 
     public void deleteLike(User user) {
         likes.remove(user);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("release_date", releaseDate);
+        values.put("duration", duration);
+        values.put("mpa_mpa_id", mpa.getId());
+        return values;
     }
 }

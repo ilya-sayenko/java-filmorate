@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.Storage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,10 +19,12 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class UserServiceImpl extends AbstractService<User> implements UserService {
     private static final Comparator<User> USER_COMPARATOR_BY_ID = Comparator.comparingInt(User::getId);
+    private final UserStorage userStorage;
 
     @Autowired
-    public UserServiceImpl(Storage<User> storage) {
+    public UserServiceImpl(UserStorage storage) {
         super(storage);
+        this.userStorage = storage;
     }
 
     private void changeUserNameIfNull(User user) {
@@ -38,12 +40,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
 
     @Override
-    public User findById(int id) throws UserNotFoundException {
-        try {
-            return super.findById(id);
-        } catch (ModelNotFoundException ex) {
-            throw new UserNotFoundException(id);
-        }
+    protected String getModelName() {
+        return "User";
     }
 
     @Override
@@ -69,8 +67,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public void addFriend(int userId, int friendId) throws UserNotFoundException {
         User user = findById(userId);
         User friend = findById(friendId);
-        user.addFriend(friend);
-        friend.addFriend(user);
+        userStorage.addFriend(user, friend);
         log.info(FRIEND_ADDED.getMessage());
     }
 
@@ -78,8 +75,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public void deleteFriend(int userId, int friendId) {
         User user = findById(userId);
         User friend = findById(friendId);
-        user.deleteFriend(friend);
-        friend.deleteFriend(user);
+        userStorage.deleteFriend(user, friend);
         log.info(FRIEND_DELETED.getMessage());
     }
 

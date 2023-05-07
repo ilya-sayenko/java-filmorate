@@ -1,14 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public interface Model {
+    int getId();
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Model {
-    private int id;
+    void setId(int id);
 }

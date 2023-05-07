@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
-import lombok.AllArgsConstructor;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.model.Model;
 import ru.yandex.practicum.filmorate.service.Service;
@@ -9,9 +8,12 @@ import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 public abstract class AbstractService<T extends Model> implements Service<T> {
     protected final Storage<T> storage;
+
+    protected AbstractService(Storage<T> storage) {
+        this.storage = storage;
+    }
 
     public List<T> findAll() {
         return storage.findAll().stream().collect(Collectors.toUnmodifiableList());
@@ -19,7 +21,7 @@ public abstract class AbstractService<T extends Model> implements Service<T> {
 
     @Override
     public T findById(int id) throws ModelNotFoundException {
-        return storage.findById(id).orElseThrow(ModelNotFoundException::new);
+        return storage.findById(id).orElseThrow(() -> new ModelNotFoundException(id, getModelName()));
     }
 
     @Override
@@ -34,4 +36,6 @@ public abstract class AbstractService<T extends Model> implements Service<T> {
     }
 
     protected abstract void changeNewModelBeforeUpdate(T newModel, T oldModel);
+
+    protected abstract String getModelName();
 }

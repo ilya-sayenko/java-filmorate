@@ -91,14 +91,6 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    private void insertGenres(Film film) {
-        if (film.getGenres() != null) {
-            film.getGenres().forEach(g ->
-                    jdbcTemplate.update("insert into films_genres values(?, ?)", film.getId(), g.getId())
-            );
-        }
-    }
-
     @Override
     public void addLike(Film film, User user) {
         film.addLike(user);
@@ -140,5 +132,13 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet("select * from mpa where mpa_id = ?", film.getMpa().getId());
         mpaRow.next();
         film.setMpa(mpaConverter.apply(mpaRow));
+    }
+
+    private void insertGenres(Film film) {
+        if (film.getGenres() != null) {
+            film.getGenres().forEach(g ->
+                    jdbcTemplate.update("insert into films_genres values(?, ?)", film.getId(), g.getId())
+            );
+        }
     }
 }

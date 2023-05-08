@@ -1,11 +1,15 @@
-insert into mpa values
+--delete from mpa;
+--alter table mpa alter column mpa_id restart with 1;
+merge into mpa key(mpa_id) values
 (1, 'G'),
 (2, 'PG'),
 (3, 'PG-13'),
 (4, 'R'),
 (5, 'NC-17');
 
-insert into genres values
+--delete from genres;
+--alter table genres alter column genre_id restart with 1;
+merge into genres key(genre_id) values
 (1, 'Комедия'),
 (2, 'Драма'),
 (3, 'Мультфильм'),
@@ -13,6 +17,8 @@ insert into genres values
 (5, 'Документальный'),
 (6, 'Боевик');
 
-insert into friend_statuses values
+--delete from friend_statuses;
+--alter table friend_statuses alter column frstat_id restart with 1;
+merge into friend_statuses key(frstat_id) values
 (1, 'Неподтвержден'),
 (2, 'Подтвержден');

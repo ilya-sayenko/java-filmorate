@@ -78,7 +78,7 @@ class FilmDbStorageTest {
 
         filmDbStorage.addLike(film, user);
 
-        assertThat(film.getLikes()).isNotEmpty();
+        assertThat(filmDbStorage.getNumberOfLikes(1)).isEqualTo(2);
     }
 
     @Test
@@ -88,6 +88,6 @@ class FilmDbStorageTest {
 
         filmDbStorage.deleteLike(film, user);
 
-        assertThat(film.getLikes()).isEmpty();
+        assertThat(filmDbStorage.getNumberOfLikes(1)).isEqualTo(0);
     }
 }

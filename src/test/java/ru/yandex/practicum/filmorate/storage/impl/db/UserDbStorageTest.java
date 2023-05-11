@@ -72,7 +72,7 @@ class UserDbStorageTest {
 
         userDbStorage.addFriend(user, friend);
 
-        assertThat(user.getFriends()).isNotEmpty();
+        assertThat(userDbStorage.findFriends(user.getId())).isNotEmpty();
     }
 
     @Test
@@ -82,6 +82,6 @@ class UserDbStorageTest {
 
         userDbStorage.deleteFriend(user, friend);
 
-        assertThat(user.getFriends()).isEmpty();
+        assertThat(userDbStorage.findFriends(user.getId())).isEmpty();
     }
 }

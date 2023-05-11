@@ -1,20 +1,20 @@
 package ru.yandex.practicum.filmorate.storage.impl.db.converter;
 
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import ru.yandex.practicum.filmorate.model.impl.User;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
-import java.util.function.Function;
 
-public class UserConverter implements Function<SqlRowSet, User> {
-    @Override
-    public User apply(SqlRowSet sqlRowSet) {
+public class UserConverter {
+
+    public static User fromResultSet(ResultSet rs) throws SQLException {
         return User.userBuilder()
-                .id(sqlRowSet.getInt("user_id"))
-                .email(sqlRowSet.getString("email"))
-                .login(sqlRowSet.getString("login"))
-                .name(sqlRowSet.getString("name"))
-                .birthday(Objects.requireNonNull(sqlRowSet.getDate("birthday")).toLocalDate())
+                .id(rs.getInt("user_id"))
+                .email(rs.getString("email"))
+                .login(rs.getString("login"))
+                .name(rs.getString("name"))
+                .birthday(Objects.requireNonNull(rs.getDate("birthday")).toLocalDate())
                 .build();
     }
 }

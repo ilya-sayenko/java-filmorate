@@ -9,16 +9,13 @@ import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @Service
 @Slf4j
 public class UserServiceImpl extends AbstractService<User> implements UserService {
-    private static final Comparator<User> USER_COMPARATOR_BY_ID = Comparator.comparingInt(User::getId);
     private final UserStorage userStorage;
 
     @Autowired
@@ -31,12 +28,6 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-    }
-
-    @Override
-    protected void changeNewModelBeforeUpdate(User newUser, User oldUser) {
-        newUser.setFriends(oldUser.getFriends());
-        changeUserNameIfNull(newUser);
     }
 
     @Override
@@ -81,17 +72,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public List<User> getFriends(int userId) {
-        return findById(userId).getFriends()
-                .stream()
-                .sorted(USER_COMPARATOR_BY_ID)
-                .collect(Collectors.toUnmodifiableList());
+        return userStorage.findFriends(userId);
     }
 
     @Override
     public List<User> getCommonFriends(int id, int otherId) {
-        return findById(id).getFriends()
-                .stream()
-                .filter(user -> findById(otherId).getFriends().contains(user))
-                .collect(Collectors.toUnmodifiableList());
+        return userStorage.findCommonFriends(id, otherId);
     }
 }

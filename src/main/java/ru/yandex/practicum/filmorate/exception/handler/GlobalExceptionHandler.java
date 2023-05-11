@@ -6,11 +6,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.global.GlobalAppException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.global.GlobalAppException;
 import ru.yandex.practicum.filmorate.exception.response.ErrorResponse;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+import static ru.yandex.practicum.filmorate.log.LogMessage.VALIDATION_ERROR;
 
 @RestControllerAdvice
 @Slf4j
@@ -27,5 +27,11 @@ public class GlobalExceptionHandler {
         String logMessage = ex.getLogMessage();
         log.warn(logMessage);
         return new ErrorResponse(logMessage, ex.getMessage());
+    }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handle(Throwable ex) {
+        return new ErrorResponse("Internal server error", "Unknown error");
     }
 }

@@ -31,11 +31,9 @@ public abstract class AbstractService<T extends Model> implements Service<T> {
 
     @Override
     public T update(T model) throws ModelNotFoundException {
-        changeNewModelBeforeUpdate(model, findById(model.getId()));
+        findById(model.getId());
         return storage.update(model);
     }
-
-    protected abstract void changeNewModelBeforeUpdate(T newModel, T oldModel);
 
     protected abstract String getModelName();
 }

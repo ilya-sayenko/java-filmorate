@@ -1,13 +1,31 @@
 package ru.yandex.practicum.filmorate.storage.impl.db.converter;
 
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import ru.yandex.practicum.filmorate.model.impl.Mpa;
+import ru.yandex.practicum.filmorate.util.ResultSetUtil;
 
-import java.util.function.Function;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Set;
 
-public class MpaConverter implements Function<SqlRowSet, Mpa> {
-    @Override
-    public Mpa apply(SqlRowSet sqlRowSet) {
-        return new Mpa(sqlRowSet.getInt("mpa_id"), sqlRowSet.getString("name"));
+public class MpaConverter {
+
+    public static Mpa fromResultSet(ResultSet resultSet) throws SQLException {
+        int mpaId;
+        String mpaName;
+        Set<String> columnNames = ResultSetUtil.getColumnNames(resultSet);
+
+        if (columnNames.contains("mpa_name")) {
+            mpaName = resultSet.getString("mpa_name");
+        } else {
+            mpaName = resultSet.getString("name");
+        }
+
+        if (columnNames.contains("mpa_mpa_id")) {
+            mpaId = resultSet.getInt("mpa_mpa_id");
+        } else {
+            mpaId = resultSet.getInt("mpa_id");
+        }
+
+        return new Mpa(mpaId, mpaName);
     }
 }

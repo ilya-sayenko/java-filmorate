@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.model.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,13 +11,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Data
 @Builder(builderMethodName = "filmBuilder")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Film implements Model {
     private int id;
     @NotBlank
@@ -34,31 +33,8 @@ public class Film implements Model {
 
     @Builder.Default
     @EqualsAndHashCode.Exclude
-    @JsonIgnore
-    private Set<User> likes = new HashSet<>();
-
-    @Builder.Default
-    @EqualsAndHashCode.Exclude
     private Set<Genre> genres = new HashSet<>();
 
     @EqualsAndHashCode.Exclude
     private Mpa mpa;
-
-    public void addLike(User user) {
-        likes.add(user);
-    }
-
-    public void deleteLike(User user) {
-        likes.remove(user);
-    }
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", name);
-        values.put("description", description);
-        values.put("release_date", releaseDate);
-        values.put("duration", duration);
-        values.put("mpa_mpa_id", mpa.getId());
-        return values;
-    }
 }

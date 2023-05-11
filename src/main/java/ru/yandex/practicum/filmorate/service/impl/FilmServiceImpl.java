@@ -12,16 +12,13 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @Service
 @Slf4j
 public class FilmServiceImpl extends AbstractService<Film> implements FilmService {
-    private static final Comparator<Film> FILM_COMPARATOR_BY_LIKES = (f1, f2) -> f2.getLikes().size() - f1.getLikes().size();
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
 
@@ -30,11 +27,6 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         super(storage);
         this.userStorage = userStorage;
         this.filmStorage = storage;
-    }
-
-    @Override
-    protected void changeNewModelBeforeUpdate(Film newFilm, Film oldFilm) {
-        newFilm.setLikes(oldFilm.getLikes());
     }
 
     @Override
@@ -78,10 +70,6 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
 
     @Override
     public List<Film> getPopular(int count) {
-        return storage.findAll()
-                .stream()
-                .sorted(FILM_COMPARATOR_BY_LIKES)
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.findPopular(count);
     }
 }

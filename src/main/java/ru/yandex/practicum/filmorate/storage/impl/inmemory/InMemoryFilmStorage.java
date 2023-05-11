@@ -1,30 +1,38 @@
 package ru.yandex.practicum.filmorate.storage.impl.inmemory;
 
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implements FilmStorage {
-
-    @Override
-    public Film create(Film film) {
-        if (film.getLikes() == null) {
-            film.setLikes(new HashSet<>());
-        }
-        return super.create(film);
-    }
+    private final Set<Pair<Integer, Integer>> likes = new HashSet<>();
 
     @Override
     public void addLike(Film film, User user) {
-        film.addLike(user);
+        likes.add(Pair.of(film.getId(), user.getId()));
     }
 
     @Override
     public void deleteLike(Film film, User user) {
-        film.deleteLike(user);
+        likes.remove(Pair.of(film.getId(), user.getId()));
+    }
+
+    @Override
+    public List<Film> findPopular(int count) {
+        return likes.stream()
+                .map(Pair::getFirst)
+                .sorted((n1, n2) -> n2 - n1)
+                .limit(count)
+                .map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
+                .collect(Collectors.toList());
     }
 }

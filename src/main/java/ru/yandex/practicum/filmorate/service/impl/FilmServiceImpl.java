@@ -6,42 +6,32 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.impl.Film;
+import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.Storage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @Service
 @Slf4j
 public class FilmServiceImpl extends AbstractService<Film> implements FilmService {
-    private static final Comparator<Film> FILM_COMPARATOR_BY_LIKES = (f1, f2) -> f2.getLikes().size() - f1.getLikes().size();
     private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmServiceImpl(Storage<Film> storage, UserStorage userStorage) {
+    public FilmServiceImpl(FilmStorage storage, UserStorage userStorage) {
         super(storage);
         this.userStorage = userStorage;
+        this.filmStorage = storage;
     }
 
     @Override
-    protected void changeNewModelBeforeUpdate(Film newFilm, Film oldFilm) {
-        newFilm.setLikes(oldFilm.getLikes());
-    }
-
-    @Override
-    public Film findById(int id) throws FilmNotFoundException {
-        try {
-            return super.findById(id);
-        } catch (ModelNotFoundException ex) {
-            throw new FilmNotFoundException(id);
-        }
+    protected String getModelName() {
+        return "Film";
     }
 
     @Override
@@ -66,7 +56,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     public void addLike(int filmId, int userId) throws FilmNotFoundException, UserNotFoundException {
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        film.addLike(user);
+        filmStorage.addLike(film, user);
         log.info(LIKE_ADDED.getMessage());
     }
 
@@ -74,16 +64,12 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     public void deleteLike(int filmId, int userId) {
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        film.deleteLike(user);
+        filmStorage.deleteLike(film, user);
         log.info(LIKE_DELETED.getMessage());
     }
 
     @Override
     public List<Film> getPopular(int count) {
-        return storage.findAll()
-                .stream()
-                .sorted(FILM_COMPARATOR_BY_LIKES)
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.findPopular(count);
     }
 }

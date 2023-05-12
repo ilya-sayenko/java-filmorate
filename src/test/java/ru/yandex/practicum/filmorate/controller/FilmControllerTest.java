@@ -7,7 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.impl.Film;
+import ru.yandex.practicum.filmorate.model.impl.Mpa;
 
 import java.time.LocalDate;
 
@@ -35,11 +36,11 @@ public class FilmControllerTest {
     @Test
     public void shouldAddFilm() throws Exception {
         Film film = Film.filmBuilder()
-                .id(1)
                 .name("Film")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
                 .duration(50)
+                .mpa(new Mpa(1, "G"))
                 .build();
 
         mockMvc.perform(
@@ -53,7 +54,6 @@ public class FilmControllerTest {
     @Test
     public void shouldNotAddFilm() throws Exception {
         Film film = Film.filmBuilder()
-                .id(1)
                 .name("")
                 .description("Description")
                 .releaseDate(LocalDate.of(2020, 1, 1))
@@ -68,7 +68,6 @@ public class FilmControllerTest {
                 .andExpect(status().isBadRequest());
 
         film = Film.filmBuilder()
-                .id(1)
                 .name("Name")
                 .description("11111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                         "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
@@ -86,7 +85,6 @@ public class FilmControllerTest {
                 .andExpect(status().isBadRequest());
 
         film = Film.filmBuilder()
-                .id(1)
                 .name("Name")
                 .description("Description")
                 .releaseDate(LocalDate.of(1700, 1, 1))
@@ -101,7 +99,6 @@ public class FilmControllerTest {
                 .andExpect(status().isBadRequest());
 
         film = Film.filmBuilder()
-                .id(1)
                 .name("Name")
                 .description("Description")
                 .releaseDate(LocalDate.of(1700, 1, 1))

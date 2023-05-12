@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.impl.User;
 
 import java.time.LocalDate;
 
@@ -29,7 +29,6 @@ public class UserControllerTest {
     @Test
     public void shouldAddUser() throws Exception {
         User user = User.userBuilder()
-                .id(1)
                 .email("example@mail.ru")
                 .login("login")
                 .name("name")
@@ -47,7 +46,6 @@ public class UserControllerTest {
     @Test
     public void shouldNotAddUser() throws Exception {
         User user = User.userBuilder()
-                .id(1)
                 .email("example.ru")
                 .login("login")
                 .name("name")
@@ -77,7 +75,6 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
 
         user = User.userBuilder()
-                .id(1)
                 .email("example@mail.ru")
                 .login("log in")
                 .name("name")
@@ -92,7 +89,6 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
 
         user = User.userBuilder()
-                .id(1)
                 .email("example@mail.ru")
                 .login("login")
                 .name("name")

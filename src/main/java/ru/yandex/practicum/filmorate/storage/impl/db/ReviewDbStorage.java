@@ -19,14 +19,13 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
-    private final JdbcTemplate jdbcTemplate;
-    private final String BASE_SELECT = "select r.*," +
+    private static final String BASE_SELECT = "select r.*," +
             " rg.rev_rev_id as grade_rev_id," +
             " rg.is_positive as is_positive_grade" +
             " from reviews r" +
             " left join review_grades rg" +
             "        on rg.rev_rev_id = r.rev_id ";
-
+    private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
     private final FilmDbStorage filmDbStorage;
 

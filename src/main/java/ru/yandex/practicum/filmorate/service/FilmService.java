@@ -10,6 +10,7 @@ public interface FilmService extends Service<Film> {
     void deleteLike(int filmId, int userId);
 
     List<Film> getPopular(int count);
+
     List<Film> getCommon(int userId, int friendId);
 
 }

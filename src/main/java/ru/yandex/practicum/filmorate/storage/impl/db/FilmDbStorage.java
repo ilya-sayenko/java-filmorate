@@ -154,6 +154,7 @@ public class FilmDbStorage implements FilmStorage {
                         id)
         ).orElse(0);
     }
+
     public boolean isFilmExists(int filmId) {
         Integer filmsCount = jdbcTemplate.queryForObject(
                 "select count(*) cnt from films where film_id = ?",

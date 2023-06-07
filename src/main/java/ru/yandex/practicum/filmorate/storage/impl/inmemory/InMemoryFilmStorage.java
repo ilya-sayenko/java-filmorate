@@ -14,7 +14,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implements FilmStorage {
+
+
     private final Set<Pair<Integer, Integer>> likes = new HashSet<>();
+
 
     @Override
     public void addLike(Film film, User user) {
@@ -34,5 +37,17 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
                 .limit(count)
                 .map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Film> getCommon(int userId, int friendId) {
+        List<Integer> userFilms = likes.stream().filter(p -> p.getFirst() == userId).map(Pair::getFirst)
+                .collect(Collectors.toList());
+        List<Integer> friendFilms = likes.stream().filter(p -> p.getFirst() == friendId).map(Pair::getFirst)
+                .collect(Collectors.toList());
+         userFilms.retainAll(friendFilms);
+
+         return userFilms.stream().map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
+                 .collect(Collectors.toList());
     }
 }

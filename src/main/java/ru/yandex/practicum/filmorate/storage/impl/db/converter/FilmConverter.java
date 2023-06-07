@@ -11,6 +11,7 @@ import java.util.Objects;
 public class FilmConverter {
 
     public static Film fromResultSet(ResultSet rs) throws SQLException {
+
         return Film.filmBuilder()
                 .id(rs.getInt("film_id"))
                 .name(rs.getString("name"))

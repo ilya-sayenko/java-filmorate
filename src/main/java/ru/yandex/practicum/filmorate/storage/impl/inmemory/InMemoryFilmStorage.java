@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implements FilmStorage {
-
-
     private final Set<Pair<Integer, Integer>> likes = new HashSet<>();
 
 

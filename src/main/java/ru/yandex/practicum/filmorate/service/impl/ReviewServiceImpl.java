@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ReviewNotFoundException;
+import ru.yandex.practicum.filmorate.model.impl.Event;
 import ru.yandex.practicum.filmorate.model.impl.Review;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
@@ -19,6 +21,7 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewStorage reviewStorage;
+    private final EventService eventService;
 
     @Override
     public Review findById(int id) {
@@ -43,6 +46,16 @@ public class ReviewServiceImpl implements ReviewService {
     public Review create(Review review) {
         Review createdReview = reviewStorage.create(review);
         log.info(REVIEW_IS_UPDATED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(review.getUserId())
+                        .type(Event.EventType.REVIEW)
+                        .operation(Event.OperationType.ADD)
+                        .entityId(review.getId())
+                        .build()
+        );
+
         return createdReview;
     }
 
@@ -50,13 +63,33 @@ public class ReviewServiceImpl implements ReviewService {
     public Review update(Review review) {
         Review updatedReview = reviewStorage.update(review);
         log.info(REVIEW_IS_UPDATED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(updatedReview.getUserId())
+                        .type(Event.EventType.REVIEW)
+                        .operation(Event.OperationType.UPDATE)
+                        .entityId(updatedReview.getId())
+                        .build()
+        );
+
         return updatedReview;
     }
 
     @Override
     public void deleteById(int reviewId) {
+        int userId = findById(reviewId).getUserId();
         reviewStorage.deleteById(reviewId);
         log.info(REVIEW_IS_DELETED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(userId)
+                        .type(Event.EventType.REVIEW)
+                        .operation(Event.OperationType.REMOVE)
+                        .entityId(reviewId)
+                        .build()
+        );
     }
 
     @Override

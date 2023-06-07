@@ -53,7 +53,8 @@ public enum LogMessage {
     LIKE_FOR_REVIEW_IS_DELETED,
     DELETE_DISLIKE_FOR_REVIEW,
     DISLIKE_FOR_REVIEW_IS_DELETED,
-    GET_COMMON_FILMS;
+    GET_COMMON_FILMS,
+    GET_EVENTS_BY_USER;
 
     public String getMessage() {
         return StringUtils.capitalize(this.name().toLowerCase().replaceAll("_", " "));

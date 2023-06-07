@@ -16,7 +16,7 @@ public class Event implements Model {
     private int id;
 
     @Builder.Default
-    private String timestamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime());
+    private long timestamp = new Timestamp(System.currentTimeMillis()).getTime();
     private int userId;
 
     @JsonProperty("eventType")

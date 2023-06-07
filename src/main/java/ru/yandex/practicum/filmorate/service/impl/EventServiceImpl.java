@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.model.impl.Event;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.storage.EventStorage;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
@@ -14,5 +16,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event create(Event event) {
         return eventStorage.create(event);
+    }
+
+    @Override
+    public List<Event> findByUserId(int userId) {
+        return eventStorage.findByUserId(userId);
     }
 }

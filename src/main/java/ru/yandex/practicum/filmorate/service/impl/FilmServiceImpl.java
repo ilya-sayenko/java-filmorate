@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.model.impl.Event;
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -21,12 +23,14 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 public class FilmServiceImpl extends AbstractService<Film> implements FilmService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final EventService eventService;
 
     @Autowired
-    public FilmServiceImpl(FilmStorage storage, UserStorage userStorage) {
+    public FilmServiceImpl(FilmStorage storage, UserStorage userStorage, EventService eventService) {
         super(storage);
         this.userStorage = userStorage;
         this.filmStorage = storage;
+        this.eventService = eventService;
     }
 
     @Override
@@ -58,6 +62,15 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.addLike(film, user);
         log.info(LIKE_IS_ADDED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(userId)
+                        .type(Event.EventType.LIKE)
+                        .operation(Event.OperationType.ADD)
+                        .entityId(filmId)
+                        .build()
+        );
     }
 
     @Override
@@ -66,6 +79,15 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.deleteLike(film, user);
         log.info(LIKE_IS_DELETED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(userId)
+                        .type(Event.EventType.LIKE)
+                        .operation(Event.OperationType.REMOVE)
+                        .entityId(filmId)
+                        .build()
+        );
     }
 
     @Override

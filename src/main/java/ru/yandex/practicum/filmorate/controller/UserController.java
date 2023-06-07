@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.impl.Event;
-import ru.yandex.practicum.filmorate.model.impl.Film;
+
 import ru.yandex.practicum.filmorate.model.impl.User;
-import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.service.UserService;
+
 import static ru.yandex.practicum.filmorate.log.LogMessage.ADD_FRIEND;
 import static ru.yandex.practicum.filmorate.log.LogMessage.CREATE_USER;
 import static ru.yandex.practicum.filmorate.log.LogMessage.DELETE_FRIEND;
@@ -85,15 +85,15 @@ public class UserController {
         return userService.getCommonFriends(id, otherId);
     }
 
-    @GetMapping(value = "/{id}/feed")
-    public List<Event> getEvents(@PathVariable int id) {
-        log.info(GET_EVENTS_BY_USER.getMessage());
-        return eventService.findByUserId(id);
-    }
-
     @GetMapping("/{id}/recommendations")
     public List<Film> getRecommendations(@PathVariable int id) {
         log.info((GET_RECOMMENDATIONS.getMessage()));
         return userService.getRecommendations(id);
+    }
+
+    @GetMapping(value = "/{id}/feed")
+    public List<Event> getEvents(@PathVariable int id) {
+        log.info(GET_EVENTS_BY_USER.getMessage());
+        return eventService.findByUserId(id);
     }
 }

@@ -38,13 +38,13 @@ public class ReviewController {
 
     @PostMapping
     public Review create(@Valid @RequestBody Review review) {
-        log.info(CREATE_REVIEW.getMessage());
+        log.info(REVIEW_IS_CREATED.getMessage());
         return reviewService.create(review);
     }
 
     @PutMapping
     public Review update(@RequestBody Review review) {
-        log.info(UPDATE_REVIEW.getMessage());
+        log.info(REVIEW_IS_UPDATED.getMessage());
         return reviewService.update(review);
     }
 

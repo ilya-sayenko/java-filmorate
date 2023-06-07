@@ -37,7 +37,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     @Override
     public Film create(Film film) {
         Film createdFilm = super.create(film);
-        log.info(FILM_IS_CREATED.getMessage());
+        log.info(FILM_CREATED.getMessage());
         return createdFilm;
     }
 
@@ -45,7 +45,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     public Film update(Film film) throws FilmNotFoundException {
         try {
             Film updatedFilm = super.update(film);
-            log.info(FILM_IS_UPDATED.getMessage());
+            log.info(FILM_UPDATED.getMessage());
             return updatedFilm;
         } catch (ModelNotFoundException ex) {
             throw new FilmNotFoundException(film.getId());
@@ -57,7 +57,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.addLike(film, user);
-        log.info(LIKE_IS_ADDED.getMessage());
+        log.info(LIKE_ADDED.getMessage());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.deleteLike(film, user);
-        log.info(LIKE_IS_DELETED.getMessage());
+        log.info(LIKE_DELETED.getMessage());
     }
 
     @Override

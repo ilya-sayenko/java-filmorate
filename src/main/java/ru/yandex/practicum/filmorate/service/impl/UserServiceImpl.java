@@ -39,7 +39,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public User create(User user) {
         changeUserNameIfNull(user);
         User createdUser = super.create(user);
-        log.info(USER_IS_CREATED.getMessage());
+        log.info(USER_CREATED.getMessage());
         return createdUser;
     }
 
@@ -47,7 +47,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public User update(User user) throws UserNotFoundException {
         try {
             User updatedUser = super.update(user);
-            log.info(USER_IS_UPDATED.getMessage());
+            log.info(USER_UPDATED.getMessage());
             return updatedUser;
         } catch (ModelNotFoundException ex) {
             throw new UserNotFoundException(user.getId());
@@ -59,7 +59,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User user = findById(userId);
         User friend = findById(friendId);
         userStorage.addFriend(user, friend);
-        log.info(FRIEND_IS_ADDED.getMessage());
+        log.info(FRIEND_ADDED.getMessage());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User user = findById(userId);
         User friend = findById(friendId);
         userStorage.deleteFriend(user, friend);
-        log.info(FRIEND_IS_DELETED.getMessage());
+        log.info(FRIEND_DELETED.getMessage());
     }
 
     @Override

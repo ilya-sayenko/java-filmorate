@@ -1,22 +1,27 @@
 package ru.yandex.practicum.filmorate.storage.impl.db;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.Genre;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.FilmConverter;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.GenreConverter;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @Primary

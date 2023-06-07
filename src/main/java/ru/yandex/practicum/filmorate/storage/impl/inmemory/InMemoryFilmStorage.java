@@ -45,9 +45,9 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
                 .collect(Collectors.toList());
         List<Integer> friendFilms = likes.stream().filter(p -> p.getFirst() == friendId).map(Pair::getFirst)
                 .collect(Collectors.toList());
-         userFilms.retainAll(friendFilms);
+        userFilms.retainAll(friendFilms);
 
-         return userFilms.stream().map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
-                 .collect(Collectors.toList());
+        return userFilms.stream().map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
+                .collect(Collectors.toList());
     }
 }

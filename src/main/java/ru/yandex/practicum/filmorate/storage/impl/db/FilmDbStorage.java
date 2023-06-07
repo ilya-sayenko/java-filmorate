@@ -146,6 +146,7 @@ public class FilmDbStorage implements FilmStorage {
                 "                left join genres g on g.genre_id = fg.genre_genre_id ";
         return jdbcTemplate.query(sql, FilmConverter::listFromResultSet, userId, friendId);
     }
+
     public int getNumberOfLikes(int id) {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject("select count(*) cnt from likes where film_film_id = ?",

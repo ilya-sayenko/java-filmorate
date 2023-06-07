@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implements FilmStorage {
     private final Set<Pair<Integer, Integer>> likes = new HashSet<>();
 
-
     @Override
     public void addLike(Film film, User user) {
         likes.add(Pair.of(film.getId(), user.getId()));

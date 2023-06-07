@@ -36,7 +36,9 @@ public enum LogMessage {
     APPLICATION_ERROR,
     MODEL_NOT_FOUND,
     MPA_NOT_FOUND,
-    GENRE_NOT_FOUND;
+    GENRE_NOT_FOUND,
+
+    GET_COMMON_FILMS;
 
     public String getMessage() {
         return StringUtils.capitalize(this.name().toLowerCase().replaceAll("_", " "));

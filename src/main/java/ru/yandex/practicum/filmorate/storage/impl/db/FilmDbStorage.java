@@ -136,6 +136,32 @@ public class FilmDbStorage implements FilmStorage {
         return filmsCount != null && filmsCount == 1;
     }
 
+    @Override
+    public List<Film> getCommon(int userId, int friendId) {
+        String sql = "select f.*, " +
+                "       m.name mpa_name, " +
+                "       g.genre_id, " +
+                "       g.name genre_name " +
+                "from (select film_film_id, " +
+                "    count(user_user_id) AS like_count " +
+                "                from likes AS  l" +
+                "                where film_film_id IN " +
+                "                (select film_film_id " +
+                "                from likes " +
+                "                where user_user_id = ? and film_film_id IN " +
+                "                ( select film_film_id " +
+                "                from likes  " +
+                "                where user_user_id = ? )) " +
+                "                group by film_film_id " +
+                "                order by like_count desc) as sorted_films " +
+                "left join films f on f.film_id = sorted_films.film_film_id " +
+                "                left join  mpa m on m.mpa_id = f.mpa_mpa_id " +
+
+                "                left join films_genres fg on fg.film_film_id = f.film_id " +
+                "                left join genres g on g.genre_id = fg.genre_genre_id ";
+        return jdbcTemplate.query(sql, FilmConverter::listFromResultSet, userId, friendId);
+    }
+
     private List<Film> findByIds(int... ids) {
         String inSql = Arrays.stream(ids).mapToObj(String::valueOf).collect(Collectors.joining(","));
         String sql = "select " +

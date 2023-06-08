@@ -35,4 +35,9 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
                 .map(id -> findById(id).orElseThrow(() -> new FilmNotFoundException(id)))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Film> getCommon(int userId, int friendId) {
+        return null;
+    }
 }

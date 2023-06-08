@@ -59,4 +59,10 @@ public class FilmController {
         log.info(GET_POPULAR_FILM.getMessage());
         return filmService.getPopular(count);
     }
+
+    @GetMapping(value = "/common")
+    public List<Film> getCommon(@RequestParam int userId, @RequestParam int friendId) {
+        log.info(GET_COMMON_FILMS.getMessage());
+        return filmService.getCommon(userId, friendId);
+    }
 }

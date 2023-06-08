@@ -46,7 +46,7 @@ public class EventDbStorage implements EventStorage {
                 .usingGeneratedKeyColumns("event_id");
 
         Map<String, Object> values = Map.of(
-                "timestamp", String.valueOf(new Timestamp(System.currentTimeMillis()).getTime()),
+                "timestamp", new Timestamp(System.currentTimeMillis()).getTime(),
                 "user_user_id", event.getUserId(),
                 "evtp_evtp_id", event.getType().getId(),
                 "optp_optp_id", event.getOperation().getId(),

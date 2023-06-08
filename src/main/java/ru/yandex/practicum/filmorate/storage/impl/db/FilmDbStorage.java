@@ -138,7 +138,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getCommon(int userId, int friendId) {
-        String sql = "select * , m.name mpa_name " +
+        String sql = "select * , m.name mpa_name, g.name genre_name " +
                 "from " +
                 "    (" +
                 "        select film_film_id, count(user_user_id) cnt_likes " +

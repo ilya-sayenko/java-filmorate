@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.Genre;
 import ru.yandex.practicum.filmorate.model.impl.User;
@@ -104,7 +106,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteLike(Film film, User user) {
-        jdbcTemplate.update("delete from likes where film_film_id = ? and user_user_id = ?", film.getId(), user.getId());
+        jdbcTemplate.update("delete from likes where film_film_id = ? and user_user_id = ?", film.getId(),
+                user.getId());
     }
 
     @Override

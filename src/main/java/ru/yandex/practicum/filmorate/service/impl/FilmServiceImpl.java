@@ -72,4 +72,11 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     public List<Film> getPopular(int count) {
         return filmStorage.findPopular(count);
     }
+
+    @Override
+    public List<Film> getCommon(int userId, int friendId) {
+        userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        userStorage.findById(friendId).orElseThrow(() -> new UserNotFoundException(friendId));
+        return filmStorage.getCommon(userId, friendId);
+    }
 }

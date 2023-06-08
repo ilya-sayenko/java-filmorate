@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.impl.db.converter.FilmConverter;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.UserConverter;
 
 @Component
@@ -29,6 +28,7 @@ import ru.yandex.practicum.filmorate.storage.impl.db.converter.UserConverter;
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate jdbcTemplateNamed;
+    private final FilmDbStorage filmDbStorage;
 
     @Override
     public List<User> findAll() {
@@ -144,25 +144,24 @@ public class UserDbStorage implements UserStorage {
         }
 
         // запрос в бд на получение id других пользователей, которые тоже лайкнули эти фильмы
-        Map<Integer, Integer> usersIdAndFreq = new HashMap<>();
-        for (Integer filmId : idFilmsLiked) {
-            String queryForUsersWithSameInterests = "select user_user_id from likes where film_film_id = ? and " +
-                    "user_user_id != ?";
-            List<Integer> usersIdWithSameInterests = jdbcTemplate.queryForList(queryForUsersWithSameInterests,
-                    Integer.class, filmId, userId);
+        String queryForUsersWithSameInterests = "select user_user_id from likes where film_film_id in (:ids) and " +
+                "user_user_id != :userId";
+        List<Integer> usersIdWithSameInterests = jdbcTemplateNamed.queryForList(queryForUsersWithSameInterests,
+                Map.of("ids", idFilmsLiked, "userId", userId), Integer.class);
 
-            // кладу id этих пользователей в мапу, где ключ это id, а значение это количество совпадающих лайков
-            for (Integer otherUserId : usersIdWithSameInterests) {
-                if (!usersIdAndFreq.containsKey(otherUserId)) {
-                    usersIdAndFreq.put(otherUserId, 1);
-                } else {
-                    usersIdAndFreq.put(otherUserId, usersIdAndFreq.get(otherUserId) + 1);
-                }
+        // кладу id этих пользователей в мапу, где ключ это id, а значение это количество совпадающих лайков
+        Map<Integer, Integer> usersIdAndFreq = new HashMap<>();
+        for (Integer otherUserId : usersIdWithSameInterests) {
+            if (!usersIdAndFreq.containsKey(otherUserId)) {
+                usersIdAndFreq.put(otherUserId, 1);
+            } else {
+                usersIdAndFreq.put(otherUserId, usersIdAndFreq.get(otherUserId) + 1);
             }
         }
         if (usersIdAndFreq.isEmpty()) {
             return Collections.emptyList();
         }
+
         // преобразую мапу в лист с id пользователей в порядке убывания совпадения интересов
         List<Integer> usersIdByFreqOrder = usersIdAndFreq.entrySet().stream()
                 .sorted(Comparator.comparingInt(Map.Entry<Integer, Integer>::getValue).reversed())
@@ -178,23 +177,6 @@ public class UserDbStorage implements UserStorage {
         filmsIdForRecommendation.removeAll(idFilmsLiked);
 
         // запрос в бд на получение фильмов по id
-        String sql = "select " +
-                " f.*, " +
-                " m.name mpa_name, " +
-                " g.genre_id, " +
-                " g.name genre_name, " +
-                " from likes l " +
-                " join films f " +
-                "   on f.film_id = l.film_film_id " +
-                " join mpa m " +
-                "   on m.mpa_id = f.mpa_mpa_id " +
-                " left join films_genres fg " +
-                "        on fg.film_film_id = f.film_id " +
-                " left join genres g" +
-                "        on g.genre_id = fg.genre_genre_id " +
-                " where l.film_film_id in (:ids) " +
-                " order by f.film_id, g.genre_id ";
-
-        return jdbcTemplateNamed.query(sql, Map.of("ids", filmsIdForRecommendation), FilmConverter::listFromResultSet);
+        return filmDbStorage.findByIds(filmsIdForRecommendation);
     }
 }

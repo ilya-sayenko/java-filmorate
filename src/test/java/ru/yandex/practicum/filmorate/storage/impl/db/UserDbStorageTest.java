@@ -113,4 +113,17 @@ class UserDbStorageTest {
         assertEquals(1, userDbStorage.getRecommendations(1).size());
         assertTrue(userDbStorage.getRecommendations(1).contains(film2));
     }
+
+    @Test
+    public void whenGetRecommendationsWithSameLikes_thenReturnEmptyList() {
+        User user1 = userDbStorage.findById(1).orElseThrow(() -> new UserNotFoundException(1));
+        User user2 = userDbStorage.findById(2).orElseThrow(() -> new UserNotFoundException(2));
+        Film film1 = filmDbStorage.findById(1).orElseThrow(() -> new FilmNotFoundException(1));
+        Film film2 = filmDbStorage.findById(2).orElseThrow(() -> new FilmNotFoundException(2));
+
+        filmDbStorage.addLike(film1, user1);
+        filmDbStorage.addLike(film1, user2);
+
+        assertTrue(userDbStorage.getRecommendations(1).isEmpty());
+    }
 }

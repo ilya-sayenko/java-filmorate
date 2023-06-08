@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.impl.db;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
@@ -28,16 +28,31 @@ import ru.yandex.practicum.filmorate.storage.impl.db.converter.GenreConverter;
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final MpaDbStorage mpaDbStorage;
 
     @Override
     public List<Film> findAll() {
-        return findByIds();
+        String sql = "select " +
+                " f.*, " +
+                " m.name mpa_name, " +
+                " g.genre_id, " +
+                " g.name genre_name, " +
+                " from films f " +
+                " join mpa m " +
+                "   on m.mpa_id = f.mpa_mpa_id " +
+                " left join films_genres fg " +
+                "        on fg.film_film_id = f.film_id " +
+                " left join genres g" +
+                "        on g.genre_id = fg.genre_genre_id " +
+                " order by f.film_id, g.genre_id";
+
+        return jdbcTemplate.query(sql, FilmConverter::listFromResultSet);
     }
 
     @Override
     public Optional<Film> findById(int id) {
-        return findByIds(id).stream().findFirst();
+        return findByIds(List.of(id)).stream().findFirst();
     }
 
     @Override
@@ -164,8 +179,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, FilmConverter::listFromResultSet, userId, friendId);
     }
 
-    private List<Film> findByIds(int... ids) {
-        String inSql = Arrays.stream(ids).mapToObj(String::valueOf).collect(Collectors.joining(","));
+    public List<Film> findByIds(List<Integer> ids) {
         String sql = "select " +
                 " f.*, " +
                 " m.name mpa_name, " +
@@ -178,10 +192,10 @@ public class FilmDbStorage implements FilmStorage {
                 "        on fg.film_film_id = f.film_id " +
                 " left join genres g" +
                 "        on g.genre_id = fg.genre_genre_id " +
-                (ids.length == 0 ? "" : " where f.film_id in (" + inSql + ") ") +
+                " where f.film_id in (:ids) " +
                 " order by f.film_id, g.genre_id";
 
-        return jdbcTemplate.query(sql, FilmConverter::listFromResultSet);
+        return namedParameterJdbcTemplate.query(sql, Map.of("ids", ids), FilmConverter::listFromResultSet);
     }
 
     private void setGenresForInstance(Film film) {

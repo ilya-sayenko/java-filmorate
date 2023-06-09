@@ -27,7 +27,7 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
     }
 
     @Override
-    public List<Film> findPopular(int count) {
+    public List<Film> findPopular(int count, Integer genreId, Integer year) {
         return likes.stream()
                 .map(Pair::getFirst)
                 .sorted((n1, n2) -> n2 - n1)

@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.Genre;
 import ru.yandex.practicum.filmorate.model.impl.User;
@@ -112,31 +111,34 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findPopular(int count) {
-        String sql = "select " +
-                " f.*, " +
-                " m.name mpa_name, " +
-                " g.genre_id, " +
-                " g.name genre_name " +
-                " from films f " +
-                " left join (" +
-                "     select " +
-                "     l.film_film_id, " +
-                "     count(l.user_user_id) cnt_likes " +
-                "     from likes l " +
-                "     group by l.film_film_id" +
-                "     order by cnt_likes desc" +
-                "     limit ?" +
-                " ) fl" +
-                "   on fl.film_film_id = f.film_id " +
-                " join mpa m" +
-                "   on m.mpa_id = f.mpa_mpa_id " +
-                " left join films_genres fg " +
-                "        on fg.film_film_id = f.film_id " +
-                " left join genres g " +
-                "       on g.genre_id  = fg.genre_genre_id " +
-                " order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id" +
-                " limit ?";
-
+        String sql = "SELECT * FROM ( " +
+                "   SELECT " +
+                "       DENSE_RANK () over(ORDER BY fl.cnt_likes DESC , f.film_id) rnk, " +
+                "       fl.cnt_likes, " +
+                "       f.*, " +
+                "       m.name mpa_name, " +
+                "       g.genre_id, " +
+                "       g.name genre_name " +
+                "   FROM films f " +
+                "            LEFT JOIN ( " +
+                "       SELECT " +
+                "           l.film_film_id , " +
+                "           count(l.user_user_id) cnt_likes " +
+                "       FROM likes l " +
+                "       GROUP BY l.film_film_id " +
+                "       ORDER BY cnt_likes DESC " +
+                "       LIMIT ? " +
+                "   ) fl " +
+                "       ON f.film_id  = fl.film_film_id " +
+                "            JOIN mpa m " +
+                "  ON m.mpa_id = f.mpa_mpa_id " +
+                "            LEFT JOIN films_genres fg " +
+                "       ON fg.film_film_id = f.film_id " +
+                "            LEFT JOIN genres g " +
+                "       ON g.genre_id = fg.genre_genre_id " +
+                "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
+                "              ) t " +
+                "WHERE t.rnk <= ?";
         return jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count);
     }
 
@@ -197,6 +199,10 @@ public class FilmDbStorage implements FilmStorage {
                 " order by f.film_id, g.genre_id";
 
         return namedParameterJdbcTemplate.query(sql, Map.of("ids", ids), FilmConverter::listFromResultSet);
+    }
+    @Override
+    public void deleteFilmById(int filmId) {
+        jdbcTemplate.update("DELETE FROM films  WHERE film_id = ?", filmId);
     }
 
     private void setGenresForInstance(Film film) {

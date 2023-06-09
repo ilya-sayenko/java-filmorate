@@ -126,6 +126,11 @@ public class UserDbStorage implements UserStorage {
                 otherId);
     }
 
+    @Override
+    public void deleteUserById(int userId) {
+        jdbcTemplate.update("DELETE FROM users  WHERE user_id = ?", userId);
+    }
+
     public boolean isUserExists(int userId) {
         Integer usersCount = jdbcTemplate.queryForObject(
                 "select count(*) cnt from users where user_id = ?",

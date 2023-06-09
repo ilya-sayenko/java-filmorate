@@ -21,16 +21,7 @@ import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.ADD_FRIEND;
-import static ru.yandex.practicum.filmorate.log.LogMessage.CREATE_USER;
-import static ru.yandex.practicum.filmorate.log.LogMessage.DELETE_FRIEND;
-import static ru.yandex.practicum.filmorate.log.LogMessage.FIND_ALL_USERS;
-import static ru.yandex.practicum.filmorate.log.LogMessage.FIND_USER_BY_ID;
-import static ru.yandex.practicum.filmorate.log.LogMessage.GET_COMMON_FRIENDS;
-import static ru.yandex.practicum.filmorate.log.LogMessage.GET_EVENTS_BY_USER;
-import static ru.yandex.practicum.filmorate.log.LogMessage.GET_FRIENDS;
-import static ru.yandex.practicum.filmorate.log.LogMessage.GET_RECOMMENDATIONS;
-import static ru.yandex.practicum.filmorate.log.LogMessage.UPDATE_USER;
+import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @RestController
 @RequestMapping("/users")
@@ -98,5 +89,10 @@ public class UserController {
     public List<Event> getEvents(@PathVariable int id) {
         log.info(GET_EVENTS_BY_USER.getMessage());
         return eventService.findByUserId(id);
+    }
+    @DeleteMapping(value = "/{userId}")
+    public void deleteUserById (@PathVariable int userId) {
+        log.info(DELETE_USER.getMessage());
+        userService.deleteUserById(userId);
     }
 }

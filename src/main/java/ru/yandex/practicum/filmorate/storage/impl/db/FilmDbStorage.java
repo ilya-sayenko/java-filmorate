@@ -120,7 +120,7 @@ public class FilmDbStorage implements FilmStorage {
                 "       g.genre_id, " +
                 "       g.name genre_name " +
                 "   FROM films f " +
-                "            LEFT JOIN ( " +
+                "   LEFT JOIN ( " +
                 "       SELECT " +
                 "           l.film_film_id , " +
                 "           count(l.user_user_id) cnt_likes " +
@@ -129,12 +129,12 @@ public class FilmDbStorage implements FilmStorage {
                 "       ORDER BY cnt_likes DESC " +
                 "       LIMIT ? " +
                 "   ) fl " +
-                "       ON f.film_id  = fl.film_film_id " +
-                "            JOIN mpa m " +
-                "  ON m.mpa_id = f.mpa_mpa_id " +
-                "            LEFT JOIN films_genres fg " +
+                "   ON f.film_id  = fl.film_film_id " +
+                "   JOIN mpa m " +
+                "       ON m.mpa_id = f.mpa_mpa_id " +
+                "   LEFT JOIN films_genres fg " +
                 "       ON fg.film_film_id = f.film_id " +
-                "            LEFT JOIN genres g " +
+                "   LEFT JOIN genres g " +
                 "       ON g.genre_id = fg.genre_genre_id " +
                 "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
                 "              ) t " +

@@ -195,28 +195,26 @@ public class FilmDbStorage implements FilmStorage {
                 "         left join  films_genres fg on fg.film_film_id = f.film_id" +
                 "         left join  genres g on g.genre_id  = fg.genre_genre_id";
 
-        List<Film> filmList = null;
+        String sqlEnd =
+                " order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id" +
+                        " limit ?";
 
+        List<Film> filmList;
         if (genreId != null && year != null) {
             sql += " where g.genre_id = ? and extract(year from cast(f.release_date as date)) = ?)";
-        } else if (genreId != null) {
-            sql += " where g.genre_id = ?)";
-        } else if (year != null) {
-            sql += " where extract(year from cast(f.release_date as date)) = ?)";
-        } else {
-            sql += " )";
-        }
-
-        sql += " order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id";
-        sql += " limit ?";
-
-        if (genreId != null && year != null) {
+            sql += sqlEnd;
             filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, genreId, year, count);
         } else if (genreId != null) {
+            sql += " where g.genre_id = ?)";
+            sql += sqlEnd;
             filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, genreId, count);
         } else if (year != null) {
+            sql += " where extract(year from cast(f.release_date as date)) = ?)";
+            sql += sqlEnd;
             filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, year, count);
         } else {
+            sql += " )";
+            sql += sqlEnd;
             filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count);
         }
 

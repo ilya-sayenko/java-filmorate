@@ -12,5 +12,6 @@ public interface FilmService extends Service<Film> {
     List<Film> getPopular(int count);
 
     List<Film> getCommon(int userId, int friendId);
+
     void deleteFilmById(int filmId);
 }

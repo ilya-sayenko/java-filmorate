@@ -10,7 +10,7 @@ public interface FilmStorage extends Storage<Film> {
 
     void deleteLike(Film film, User user);
 
-    List<Film> findPopular(int count);
+    List<Film> findPopular(int count, Integer genreId, Integer year);
 
     List<Film> getCommon(int userId, int friendId);
 }

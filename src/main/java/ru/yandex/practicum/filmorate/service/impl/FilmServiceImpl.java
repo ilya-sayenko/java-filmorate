@@ -69,8 +69,8 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     }
 
     @Override
-    public List<Film> getPopular(int count) {
-        return filmStorage.findPopular(count);
+    public List<Film> getPopular(int count, Integer genreId, Integer year) {
+        return filmStorage.findPopular(count, genreId, year);
     }
 
     @Override

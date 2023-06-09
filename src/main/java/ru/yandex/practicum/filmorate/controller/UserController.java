@@ -90,8 +90,9 @@ public class UserController {
         log.info(GET_EVENTS_BY_USER.getMessage());
         return eventService.findByUserId(id);
     }
+
     @DeleteMapping(value = "/{userId}")
-    public void deleteUserById (@PathVariable int userId) {
+    public void deleteUserById(@PathVariable int userId) {
         log.info(DELETE_USER.getMessage());
         userService.deleteUserById(userId);
     }

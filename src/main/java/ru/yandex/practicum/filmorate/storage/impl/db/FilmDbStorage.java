@@ -200,6 +200,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return namedParameterJdbcTemplate.query(sql, Map.of("ids", ids), FilmConverter::listFromResultSet);
     }
+
     @Override
     public void deleteFilmById(int filmId) {
         jdbcTemplate.update("DELETE FROM films  WHERE film_id = ?", filmId);

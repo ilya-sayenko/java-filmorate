@@ -15,6 +15,7 @@ public interface UserStorage extends Storage<User> {
     List<User> findFriends(int id);
 
     List<User> findCommonFriends(int id, int otherId);
+
     void deleteUserById(int userId);
 
     List<Film> getRecommendations(int userId);

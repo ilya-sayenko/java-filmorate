@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.storage.impl.db;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -144,20 +141,25 @@ public class FilmDbStorage implements FilmStorage {
                 " left join  films_genres fg on fg.film_film_id = f.film_id" +
                 " left join  genres g on g.genre_id  = fg.genre_genre_id";
 
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" where 1 = 1 ");
+
+        List<Integer> list = new ArrayList<>();
+        list.add(count);
+        list.add(count);
+
         List<Film> filmList;
-        if (genreId != null && year != null) {
-            sql += " where g.genre_id = ? and extract(year from cast(f.release_date as date)) = ?)";
-            filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count, genreId, year);
-        } else if (genreId != null) {
-            sql += " where g.genre_id = ?)";
-            filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count, genreId);
+
+        if (genreId != null) {
+            sb.append(" and g.genre_id = ?");
+            list.add(genreId);
         } else if (year != null) {
-            sql += " where extract(year from cast(f.release_date as date)) = ?)";
-            filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count, year);
-        } else {
-            sql += " )";
-            filmList = jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count);
+            sb.append(" and extract(year from cast(f.release_date as date)) = ?");
+            list.add(year);
         }
+
+        sb.append(" )");
+        filmList = jdbcTemplate.query(sb.toString(), FilmConverter::listFromResultSet, list.toArray());
 
         return filmList;
     }

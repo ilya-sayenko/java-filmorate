@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.model.impl.Event;
 import ru.yandex.practicum.filmorate.model.impl.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -17,11 +19,13 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class UserServiceImpl extends AbstractService<User> implements UserService {
     private final UserStorage userStorage;
+    private final EventService eventService;
 
     @Autowired
-    public UserServiceImpl(UserStorage storage) {
+    public UserServiceImpl(UserStorage storage, EventService eventService) {
         super(storage);
         this.userStorage = storage;
+        this.eventService = eventService;
     }
 
     private void changeUserNameIfNull(User user) {
@@ -60,6 +64,15 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User friend = findById(friendId);
         userStorage.addFriend(user, friend);
         log.info(FRIEND_IS_ADDED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(userId)
+                        .type(Event.EventType.FRIEND)
+                        .operation(Event.OperationType.ADD)
+                        .entityId(friendId)
+                        .build()
+        );
     }
 
     @Override
@@ -68,6 +81,15 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User friend = findById(friendId);
         userStorage.deleteFriend(user, friend);
         log.info(FRIEND_IS_DELETED.getMessage());
+
+        eventService.create(
+                Event.builder()
+                        .userId(userId)
+                        .type(Event.EventType.FRIEND)
+                        .operation(Event.OperationType.REMOVE)
+                        .entityId(friendId)
+                        .build()
+        );
     }
 
     @Override

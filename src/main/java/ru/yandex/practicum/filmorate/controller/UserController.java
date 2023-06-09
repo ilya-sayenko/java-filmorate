@@ -3,7 +3,9 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.impl.Event;
 import ru.yandex.practicum.filmorate.model.impl.User;
+import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 @Slf4j
 public class UserController {
     private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping
     public List<User> findAll() {
@@ -64,5 +67,11 @@ public class UserController {
     public List<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
         log.info(GET_COMMON_FRIENDS.getMessage());
         return userService.getCommonFriends(id, otherId);
+    }
+
+    @GetMapping(value = "/{id}/feed")
+    public List<Event> getEvents(@PathVariable int id) {
+        log.info(GET_EVENTS_BY_USER.getMessage());
+        return eventService.findByUserId(id);
     }
 }

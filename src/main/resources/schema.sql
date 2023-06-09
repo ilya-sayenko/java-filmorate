@@ -4,10 +4,13 @@ DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS review_grades;
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS films;
 DROP TABLE IF EXISTS friend_statuses;
 DROP TABLE IF EXISTS mpa;
+DROP TABLE IF EXISTS event_types;
+DROP TABLE IF EXISTS operation_types;
 
 CREATE TABLE IF NOT EXISTS films (
     film_id  SERIAL  NOT NULL,
@@ -89,6 +92,34 @@ CREATE TABLE review_grades (
     is_positive boolean
 );
 
+CREATE TABLE IF NOT EXISTS events (
+    event_id  SERIAL  NOT NULL,
+    timestamp bigint   NOT NULL,
+    user_user_id int   NOT NULL,
+    evtp_evtp_id int   NOT NULL,
+    optp_optp_id int   NOT NULL,
+    entity_id int   NOT NULL,
+    CONSTRAINT pk_events PRIMARY KEY (
+        event_id
+     )
+);
+
+CREATE TABLE IF NOT EXISTS event_types (
+    evtp_id int   NOT NULL,
+    name varchar(100)   NOT NULL,
+    CONSTRAINT pk_event_types PRIMARY KEY (
+        evtp_id
+     )
+);
+
+CREATE TABLE IF NOT EXISTS operation_types (
+    optp_id int   NOT NULL,
+    name varchar(100)   NOT NULL,
+    CONSTRAINT pk_operation_types PRIMARY KEY (
+        optp_id
+     )
+);
+
 ALTER TABLE films ADD CONSTRAINT IF NOT EXISTS fk_films_mpa_mpa_id FOREIGN KEY(mpa_mpa_id)
 REFERENCES mpa (mpa_id) ON DELETE CASCADE;
 
@@ -123,4 +154,13 @@ ALTER TABLE review_grades ADD CONSTRAINT fk_review_grades_rev_rev_id FOREIGN KEY
 REFERENCES reviews (rev_id) ON DELETE CASCADE;
 
 ALTER TABLE review_grades ADD CONSTRAINT fk_review_grades_user_user_id FOREIGN KEY(user_user_id)
+REFERENCES users (user_id) ON DELETE CASCADE;
+
+ALTER TABLE events ADD CONSTRAINT IF NOT EXISTS fk_events_evtp_evtp_id FOREIGN KEY(evtp_evtp_id)
+REFERENCES event_types (evtp_id) ON DELETE CASCADE;
+
+ALTER TABLE events ADD CONSTRAINT IF NOT EXISTS fk_events_optp_optp_id FOREIGN KEY(optp_optp_id)
+REFERENCES operation_types (optp_id) ON DELETE CASCADE;
+
+ALTER TABLE events ADD CONSTRAINT IF NOT EXISTS fk_events_user_user_id FOREIGN KEY(user_user_id)
 REFERENCES users (user_id) ON DELETE CASCADE;

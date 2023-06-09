@@ -22,3 +22,13 @@ merge into genres key(genre_id) values
 merge into friend_statuses key(frstat_id) values
 (1, 'Неподтвержден'),
 (2, 'Подтвержден');
+
+merge into event_types key(evtp_id) values
+(1, 'LIKE'),
+(2, 'REVIEW'),
+(3, 'FRIEND');
+
+merge into operation_types key(optp_id) values
+(1, 'REMOVE'),
+(2, 'ADD'),
+(3, 'UPDATE');

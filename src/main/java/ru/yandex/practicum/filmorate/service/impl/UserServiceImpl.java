@@ -1,19 +1,24 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.impl.Event;
+import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.List;
-
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+import static ru.yandex.practicum.filmorate.log.LogMessage.FRIEND_IS_ADDED;
+import static ru.yandex.practicum.filmorate.log.LogMessage.FRIEND_IS_DELETED;
+import static ru.yandex.practicum.filmorate.log.LogMessage.USER_IS_CREATED;
+import static ru.yandex.practicum.filmorate.log.LogMessage.USER_IS_UPDATED;
 
 @Service
 @Slf4j
@@ -100,5 +105,10 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Override
     public List<User> getCommonFriends(int id, int otherId) {
         return userStorage.findCommonFriends(id, otherId);
+    }
+
+    @Override
+    public List<Film> getRecommendations(int userId) {
+        return userStorage.getRecommendations(userId);
     }
 }

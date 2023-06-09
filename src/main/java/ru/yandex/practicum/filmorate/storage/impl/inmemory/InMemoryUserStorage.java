@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.impl.inmemory;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -39,5 +40,10 @@ public class InMemoryUserStorage extends InMemoryAbstractStorage<User> implement
         return findFriends(id).stream()
                 .filter(u -> findFriends(otherId).contains(u))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Film> getRecommendations(int userId) {
+        return null;
     }
 }

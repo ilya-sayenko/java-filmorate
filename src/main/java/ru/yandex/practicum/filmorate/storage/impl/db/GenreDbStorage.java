@@ -31,4 +31,13 @@ public class GenreDbStorage implements GenreStorage {
             return Optional.empty();
         }
     }
+
+    public boolean isGenreExists(Integer genreId) {
+        Integer genresCount = jdbcTemplate.queryForObject(
+                "select count(*) cnt from genres where user_id = ?",
+                Integer.class,
+                genreId
+        );
+        return genresCount != null && genresCount == 1;
+    }
 }

@@ -104,7 +104,6 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
 
     @Override
     public void deleteFilmById(int filmId) {
-        findById(filmId);
         filmStorage.deleteFilmById(filmId);
         log.info(FILM_IS_DELETED.getMessage());
     }

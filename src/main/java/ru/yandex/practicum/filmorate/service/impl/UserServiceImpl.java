@@ -112,7 +112,6 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public void deleteUserById(int userId) {
-        findById(userId);
         userStorage.deleteUserById(userId);
         log.info(USER_IS_DELETED.getMessage());
     }

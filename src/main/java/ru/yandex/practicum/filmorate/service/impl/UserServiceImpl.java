@@ -15,10 +15,7 @@ import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.FRIEND_IS_ADDED;
-import static ru.yandex.practicum.filmorate.log.LogMessage.FRIEND_IS_DELETED;
-import static ru.yandex.practicum.filmorate.log.LogMessage.USER_IS_CREATED;
-import static ru.yandex.practicum.filmorate.log.LogMessage.USER_IS_UPDATED;
+import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @Service
 @Slf4j
@@ -99,6 +96,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public List<User> getFriends(int userId) {
+        findById(userId);
         return userStorage.findFriends(userId);
     }
 
@@ -110,5 +108,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Override
     public List<Film> getRecommendations(int userId) {
         return userStorage.getRecommendations(userId);
+    }
+
+    @Override
+    public void deleteUserById(int userId) {
+        userStorage.deleteUserById(userId);
+        log.info(USER_IS_DELETED.getMessage());
     }
 }

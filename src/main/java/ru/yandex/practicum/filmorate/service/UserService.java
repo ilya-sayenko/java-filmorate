@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ru.yandex.practicum.filmorate.model.impl.User;
+
 import java.util.List;
 
 import ru.yandex.practicum.filmorate.model.impl.Film;
@@ -13,6 +15,8 @@ public interface UserService extends Service<User> {
     List<User> getFriends(int userId);
 
     List<User> getCommonFriends(int id, int otherId);
+
+    void deleteUserById(int userId);
 
     List<Film> getRecommendations(int userId);
 }

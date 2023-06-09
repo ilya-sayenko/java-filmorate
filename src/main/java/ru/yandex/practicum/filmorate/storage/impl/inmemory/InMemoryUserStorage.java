@@ -46,4 +46,8 @@ public class InMemoryUserStorage extends InMemoryAbstractStorage<User> implement
     public List<Film> getRecommendations(int userId) {
         return null;
     }
+
+    @Override
+    public void deleteUserById(int userId) {
+    }
 }

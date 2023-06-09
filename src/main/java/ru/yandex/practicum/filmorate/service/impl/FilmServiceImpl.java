@@ -101,4 +101,10 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         userStorage.findById(friendId).orElseThrow(() -> new UserNotFoundException(friendId));
         return filmStorage.getCommon(userId, friendId);
     }
+
+    @Override
+    public void deleteFilmById(int filmId) {
+        filmStorage.deleteFilmById(filmId);
+        log.info(FILM_IS_DELETED.getMessage());
+    }
 }

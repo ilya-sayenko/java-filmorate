@@ -40,4 +40,9 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
     public List<Film> getCommon(int userId, int friendId) {
         return null;
     }
+
+    @Override
+    public void deleteFilmById(int filmId) {
+
+    }
 }

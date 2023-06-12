@@ -33,6 +33,9 @@ public class FilmConverter {
             if (rs.getInt("genre_id") != 0) {
                 currentFilm.getGenres().add(GenreConverter.fromResultSet(rs));
             }
+            if (rs.getInt("director_id") != 0) {
+                currentFilm.getDirectors().add(DirectorConverter.fromResultSet(rs));
+            }
         }
 
         return films;

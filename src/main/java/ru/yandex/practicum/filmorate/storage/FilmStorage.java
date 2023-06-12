@@ -14,5 +14,7 @@ public interface FilmStorage extends Storage<Film> {
 
     List<Film> getCommon(int userId, int friendId);
 
+    List<Film> getByDirector(int directorId, String sortBy);
+
     void deleteFilmById(int filmId);
 }

@@ -59,7 +59,17 @@ public enum LogMessage {
     DELETE_FILM,
     FILM_IS_DELETED,
     DELETE_USER,
-    USER_IS_DELETED;
+    USER_IS_DELETED,
+    CREATE_DIRECTOR,
+    UPDATE_DIRECTOR,
+    DELETE_DIRECTOR,
+    FIND_ALL_DIRECTORS,
+    FIND_DIRECTOR_BY_ID,
+    DIRECTOR_IS_CREATED,
+    DIRECTOR_IS_UPDATED,
+    DIRECTOR_IS_REMOVED,
+    GET_FILMS_BY_DIRECTOR,
+    DIRECTOR_NOT_FOUND;
 
     public String getMessage() {
         return StringUtils.capitalize(this.name().toLowerCase().replaceAll("_", " "));

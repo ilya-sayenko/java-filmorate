@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.DirectorNotFoundException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.User;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -24,13 +26,15 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final EventService eventService;
+    private final DirectorStorage directorStorage;
 
     @Autowired
-    public FilmServiceImpl(FilmStorage storage, UserStorage userStorage, EventService eventService) {
+    public FilmServiceImpl(FilmStorage storage, UserStorage userStorage, EventService eventService, DirectorStorage directorStorage) {
         super(storage);
         this.userStorage = userStorage;
         this.filmStorage = storage;
         this.eventService = eventService;
+        this.directorStorage = directorStorage;
     }
 
     @Override
@@ -100,6 +104,12 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         userStorage.findById(friendId).orElseThrow(() -> new UserNotFoundException(friendId));
         return filmStorage.getCommon(userId, friendId);
+    }
+
+    @Override
+    public List<Film> getByDirector(int directorId, String sortBy) {
+        directorStorage.findById(directorId).orElseThrow(() -> new DirectorNotFoundException(directorId));
+        return filmStorage.getByDirector(directorId, sortBy);
     }
 
     @Override

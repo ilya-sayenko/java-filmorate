@@ -153,7 +153,9 @@ public class FilmDbStorage implements FilmStorage {
         if (genreId != null) {
             sb.append(" and g.genre_id = ?");
             list.add(genreId);
-        } else if (year != null) {
+        }
+
+        if (year != null) {
             sb.append(" and extract(year from cast(f.release_date as date)) = ?");
             list.add(year);
         }

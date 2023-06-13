@@ -40,6 +40,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(Throwable ex) {
-        return new ErrorResponse("Internal server error", "Unknown error");
+        return new ErrorResponse("Internal server error", ex.getMessage());
     }
 }

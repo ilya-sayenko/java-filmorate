@@ -119,7 +119,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findPopular(int count) {
+    public List<Film> findPopular(int count, Integer genreId, Integer year) {
         String sql = "SELECT * FROM ( " +
                 "   SELECT " +
                 "       DENSE_RANK () over(ORDER BY fl.cnt_likes DESC , f.film_id) rnk, " +
@@ -153,8 +153,35 @@ public class FilmDbStorage implements FilmStorage {
                 "       on d.director_id = fd.director_id " +
                 "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
                 "              ) t " +
-                "WHERE t.rnk <= ?";
-        return jdbcTemplate.query(sql, FilmConverter::listFromResultSet, count, count);
+                " WHERE t.rnk <= ?" +
+                " and film_id in (select  f.film_id" +
+                " from films f" +
+                " left join  films_genres fg on fg.film_film_id = f.film_id" +
+                " left join  genres g on g.genre_id  = fg.genre_genre_id";
+
+        StringBuilder sb = new StringBuilder(sql);
+        sb.append(" where 1 = 1 ");
+
+        List<Integer> list = new ArrayList<>();
+        list.add(count);
+        list.add(count);
+
+        List<Film> filmList;
+
+        if (genreId != null) {
+            sb.append(" and g.genre_id = ?");
+            list.add(genreId);
+        }
+
+        if (year != null) {
+            sb.append(" and extract(year from cast(f.release_date as date)) = ?");
+            list.add(year);
+        }
+
+        sb.append(" )");
+        filmList = jdbcTemplate.query(sb.toString(), FilmConverter::listFromResultSet, list.toArray());
+
+        return filmList;
     }
 
     public int getNumberOfLikes(int id) {

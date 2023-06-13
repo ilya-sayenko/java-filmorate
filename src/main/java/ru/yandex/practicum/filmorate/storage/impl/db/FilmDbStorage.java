@@ -184,6 +184,55 @@ public class FilmDbStorage implements FilmStorage {
         return filmList;
     }
 
+    @Override
+    public List<Film> search(String query, List<String> listBy) {
+        String sql = "SELECT * FROM ( " +
+                "   SELECT " +
+                "       DENSE_RANK () over(ORDER BY fl.cnt_likes DESC , f.film_id) rnk, " +
+                "       fl.cnt_likes, " +
+                "       f.*, " +
+                "       m.name mpa_name, " +
+                "       g.genre_id, " +
+                "       g.name genre_name, " +
+                "       d.director_id, " +
+                "       d.director_name" +
+                "   FROM films f " +
+                "   LEFT JOIN ( " +
+                "       SELECT " +
+                "           l.film_film_id , " +
+                "           count(l.user_user_id) cnt_likes " +
+                "       FROM likes l " +
+                "       GROUP BY l.film_film_id " +
+                "       ORDER BY cnt_likes DESC " +
+                "   ) fl " +
+                "   ON f.film_id  = fl.film_film_id " +
+                "   JOIN mpa m " +
+                "       ON m.mpa_id = f.mpa_mpa_id " +
+                "   LEFT JOIN films_genres fg " +
+                "       ON fg.film_film_id = f.film_id " +
+                "   LEFT JOIN genres g " +
+                "       ON g.genre_id = fg.genre_genre_id " +
+                "   left join films_directors fd " +
+                "       on fd.film_id = f.film_id " +
+                "   left join directors d " +
+                "       on d.director_id = fd.director_id " +
+                "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
+                "              ) t ";
+        StringBuilder sb = new StringBuilder(sql);
+
+        if (!listBy.isEmpty()) {
+            sb.append(" where 1 = 1 ");
+        }
+        if (listBy.contains("title")) {
+            sb.append(" or t.name like '%").append(query.toLowerCase()).append("%'");
+        }
+        if (listBy.contains("director")) {
+            sb.append(" or t.director_name like '%").append(query.toLowerCase()).append("%'");
+        }
+
+        return jdbcTemplate.query(sb.toString(), FilmConverter::listFromResultSet);
+    }
+
     public int getNumberOfLikes(int id) {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject("select count(*) cnt from likes where film_film_id = ?",
@@ -231,7 +280,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getByDirector(int directorId, String sortBy) {
-        String sql = null;
+        String sql = "";
         switch (sortBy) {
             case "year":
                 sql = "select " +

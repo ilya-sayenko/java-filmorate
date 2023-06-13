@@ -12,6 +12,8 @@ public interface FilmStorage extends Storage<Film> {
 
     List<Film> findPopular(int count, Integer genreId, Integer year);
 
+    List<Film> search(String query, List<String> listBy);
+
     List<Film> getCommon(int userId, int friendId);
 
     List<Film> getByDirector(int directorId, String sortBy);

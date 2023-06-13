@@ -70,7 +70,8 @@ public enum LogMessage {
     DIRECTOR_IS_UPDATED,
     DIRECTOR_IS_REMOVED,
     GET_FILMS_BY_DIRECTOR,
-    DIRECTOR_NOT_FOUND;
+    DIRECTOR_NOT_FOUND,
+    SEARCH;
 
     public String getMessage() {
         return StringUtils.capitalize(this.name().toLowerCase().replaceAll("_", " "));

@@ -113,6 +113,11 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     }
 
     @Override
+    public List<Film> search(String query, List<String> listBy) {
+        return filmStorage.search(query, listBy);
+    }
+
+    @Override
     public void deleteFilmById(int filmId) {
         filmStorage.deleteFilmById(filmId);
         log.info(FILM_IS_DELETED.getMessage());

@@ -42,6 +42,11 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
     }
 
     @Override
+    public List<Film> getByDirector(int directorId, String sortBy) {
+        return null;
+    }
+
+    @Override
     public void deleteFilmById(int filmId) {
 
     }

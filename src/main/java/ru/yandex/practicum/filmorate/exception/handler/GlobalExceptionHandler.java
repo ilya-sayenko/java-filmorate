@@ -12,14 +12,12 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.exception.global.GlobalAppException;
 import ru.yandex.practicum.filmorate.exception.response.ErrorResponse;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.VALIDATION_ERROR;
-
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public void handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.warn(VALIDATION_ERROR.getMessage());
+        log.warn("Validation error");
         throw new ValidationException(ex.getMessage());
     }
 

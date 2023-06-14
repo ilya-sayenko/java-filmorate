@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.common.FilmSearchType;
+import ru.yandex.practicum.filmorate.common.FilmSortType;
 import ru.yandex.practicum.filmorate.model.impl.Director;
 import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.model.impl.Genre;
@@ -185,7 +187,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> search(String query, List<String> listBy) {
+    public List<Film> search(String query, List<FilmSearchType> listBy) {
         String sql = "SELECT * FROM ( " +
                 "   SELECT " +
                 "       DENSE_RANK () over(ORDER BY fl.cnt_likes DESC , f.film_id) rnk, " +
@@ -224,10 +226,10 @@ public class FilmDbStorage implements FilmStorage {
         if (!listBy.isEmpty()) {
             sb.append(" where ");
         }
-        if (listBy.contains("title")) {
+        if (listBy.contains(FilmSearchType.TITLE)) {
             sb.append(" lower(t.film_name) like '%").append(query.toLowerCase()).append("%'");
         }
-        if (listBy.contains("director")) {
+        if (listBy.contains(FilmSearchType.DIRECTOR)) {
             if (listBy.size() > 1) {
                 sb.append(" or ");
             }
@@ -283,10 +285,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getByDirector(int directorId, String sortBy) {
+    public List<Film> getByDirector(int directorId, FilmSortType sortBy) {
         String sql = "";
         switch (sortBy) {
-            case "year":
+            case YEAR:
                 sql = "select " +
                         " f.*, " +
                         " m.name mpa_name, " +
@@ -308,7 +310,7 @@ public class FilmDbStorage implements FilmStorage {
                         " where d.director_id = ?" +
                         " order by f.release_date, f.film_id, g.genre_id, d.director_id ";
                 break;
-            case "likes":
+            case LIKES:
                 sql = "SELECT " +
                         "       fl.cnt_likes, " +
                         "       f.*, " +

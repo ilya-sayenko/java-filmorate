@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.exception.global;
 
-import ru.yandex.practicum.filmorate.log.LogMessage;
-
 public class GlobalAppException extends RuntimeException {
     private String logMessage;
 
@@ -11,7 +9,7 @@ public class GlobalAppException extends RuntimeException {
 
     public GlobalAppException(String message) {
         super(message);
-        this.logMessage = LogMessage.APPLICATION_ERROR.getMessage();
+        this.logMessage = "Application error";
     }
 
     public GlobalAppException(String message, String logMessage) {

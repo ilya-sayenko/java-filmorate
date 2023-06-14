@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS likes
     user_user_id int NOT NULL
 );
 
-CREATE TABLE reviews
+CREATE TABLE IF NOT EXISTS reviews
 (
     rev_id       identity NOT NULL,
     film_film_id int      NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE reviews
         )
 );
 
-CREATE TABLE review_grades
+CREATE TABLE IF NOT EXISTS review_grades
 (
     rev_rev_id   int NOT NULL,
     user_user_id int NOT NULL,
@@ -190,19 +190,19 @@ ALTER TABLE likes
         REFERENCES users (user_id) ON DELETE CASCADE;
 
 ALTER TABLE reviews
-    ADD CONSTRAINT fk_reviews_film_film_id FOREIGN KEY (film_film_id)
+    ADD CONSTRAINT IF NOT EXISTS fk_reviews_film_film_id FOREIGN KEY (film_film_id)
         REFERENCES films (film_id) ON DELETE CASCADE;
 
 ALTER TABLE reviews
-    ADD CONSTRAINT fk_reviews_user_user_id FOREIGN KEY (user_user_id)
+    ADD CONSTRAINT IF NOT EXISTS fk_reviews_user_user_id FOREIGN KEY (user_user_id)
         REFERENCES users (user_id) ON DELETE CASCADE;
 
 ALTER TABLE review_grades
-    ADD CONSTRAINT fk_review_grades_rev_rev_id FOREIGN KEY (rev_rev_id)
+    ADD CONSTRAINT IF NOT EXISTS fk_review_grades_rev_rev_id FOREIGN KEY (rev_rev_id)
         REFERENCES reviews (rev_id) ON DELETE CASCADE;
 
 ALTER TABLE review_grades
-    ADD CONSTRAINT fk_review_grades_user_user_id FOREIGN KEY (user_user_id)
+    ADD CONSTRAINT IF NOT EXISTS fk_review_grades_user_user_id FOREIGN KEY (user_user_id)
         REFERENCES users (user_id) ON DELETE CASCADE;
 
 ALTER TABLE events

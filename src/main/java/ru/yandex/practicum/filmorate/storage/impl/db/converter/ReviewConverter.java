@@ -15,6 +15,7 @@ public class ReviewConverter {
                 .positive(rs.getBoolean("is_positive"))
                 .userId(rs.getInt("user_user_id"))
                 .filmId(rs.getInt("film_film_id"))
+                .useful(rs.getInt("useful"))
                 .build();
     }
 

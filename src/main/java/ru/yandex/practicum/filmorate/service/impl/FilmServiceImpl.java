@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.common.FilmSearchType;
+import ru.yandex.practicum.filmorate.common.FilmSortType;
 import ru.yandex.practicum.filmorate.exception.DirectorNotFoundException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
@@ -17,8 +19,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
 
 @Service
 @Slf4j
@@ -45,7 +45,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     @Override
     public Film create(Film film) {
         Film createdFilm = super.create(film);
-        log.info(FILM_IS_CREATED.getMessage());
+        log.info("Film is created");
         return createdFilm;
     }
 
@@ -53,7 +53,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     public Film update(Film film) throws FilmNotFoundException {
         try {
             Film updatedFilm = super.update(film);
-            log.info(FILM_IS_UPDATED.getMessage());
+            log.info("Film is updated");
             return updatedFilm;
         } catch (ModelNotFoundException ex) {
             throw new FilmNotFoundException(film.getId());
@@ -65,7 +65,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.addLike(film, user);
-        log.info(LIKE_IS_ADDED.getMessage());
+        log.info("Like is added");
 
         eventService.create(
                 Event.builder()
@@ -82,7 +82,7 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
         Film film = findById(filmId);
         User user = userStorage.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         filmStorage.deleteLike(film, user);
-        log.info(LIKE_IS_DELETED.getMessage());
+        log.info("Like is deleted");
 
         eventService.create(
                 Event.builder()
@@ -107,19 +107,19 @@ public class FilmServiceImpl extends AbstractService<Film> implements FilmServic
     }
 
     @Override
-    public List<Film> getByDirector(int directorId, String sortBy) {
+    public List<Film> getByDirector(int directorId, FilmSortType sortBy) {
         directorStorage.findById(directorId).orElseThrow(() -> new DirectorNotFoundException(directorId));
         return filmStorage.getByDirector(directorId, sortBy);
     }
 
     @Override
-    public List<Film> search(String query, List<String> listBy) {
+    public List<Film> search(String query, List<FilmSearchType> listBy) {
         return filmStorage.search(query, listBy);
     }
 
     @Override
     public void deleteFilmById(int filmId) {
         filmStorage.deleteFilmById(filmId);
-        log.info(FILM_IS_DELETED.getMessage());
+        log.info("Film is deleted");
     }
 }

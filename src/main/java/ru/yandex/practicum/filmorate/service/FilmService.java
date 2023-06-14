@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ru.yandex.practicum.filmorate.common.FilmSearchType;
+import ru.yandex.practicum.filmorate.common.FilmSortType;
 import ru.yandex.practicum.filmorate.model.impl.Film;
 
 import java.util.List;
@@ -13,9 +15,9 @@ public interface FilmService extends Service<Film> {
 
     List<Film> getCommon(int userId, int friendId);
 
-    List<Film> getByDirector(int directorId, String sortBy);
+    List<Film> getByDirector(int directorId, FilmSortType sortBy);
 
-    List<Film> search(String query, List<String> listBy);
+    List<Film> search(String query, List<FilmSearchType> listBy);
 
     void deleteFilmById(int filmId);
 }

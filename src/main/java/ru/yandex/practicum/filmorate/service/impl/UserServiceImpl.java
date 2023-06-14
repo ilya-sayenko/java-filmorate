@@ -1,11 +1,8 @@
 package ru.yandex.practicum.filmorate.service.impl;
 
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.filmorate.exception.ModelNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.impl.Event;
@@ -15,7 +12,7 @@ import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -45,7 +42,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public User create(User user) {
         changeUserNameIfNull(user);
         User createdUser = super.create(user);
-        log.info(USER_IS_CREATED.getMessage());
+        log.info("User is created");
         return createdUser;
     }
 
@@ -53,7 +50,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public User update(User user) throws UserNotFoundException {
         try {
             User updatedUser = super.update(user);
-            log.info(USER_IS_UPDATED.getMessage());
+            log.info("User is updated");
             return updatedUser;
         } catch (ModelNotFoundException ex) {
             throw new UserNotFoundException(user.getId());
@@ -65,7 +62,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User user = findById(userId);
         User friend = findById(friendId);
         userStorage.addFriend(user, friend);
-        log.info(FRIEND_IS_ADDED.getMessage());
+        log.info("Friend is added");
 
         eventService.create(
                 Event.builder()
@@ -82,7 +79,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User user = findById(userId);
         User friend = findById(friendId);
         userStorage.deleteFriend(user, friend);
-        log.info(FRIEND_IS_DELETED.getMessage());
+        log.info("Friend is deleted");
 
         eventService.create(
                 Event.builder()
@@ -113,6 +110,6 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Override
     public void deleteUserById(int userId) {
         userStorage.deleteUserById(userId);
-        log.info(USER_IS_DELETED.getMessage());
+        log.info("User is deleted");
     }
 }

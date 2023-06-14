@@ -20,11 +20,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
     private static final String BASE_SELECT = "select r.*," +
-            " rg.rev_rev_id as grade_rev_id," +
-            " rg.is_positive as is_positive_grade" +
+            " coalesce(sum(case when rg.rev_rev_id is not null and rg.is_positive then 1" +
+            "                   when rg.rev_rev_id is not null and not rg.is_positive then -1 end), 0) useful " +
             " from reviews r" +
             " left join review_grades rg" +
-            "        on rg.rev_rev_id = r.rev_id ";
+            "        on rg.rev_rev_id = r.rev_id " +
+            " <WHERE> " +
+            " group by r.rev_id " +
+            " order by useful desc " +
+            " <LIMIT>";
     private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
     private final FilmDbStorage filmDbStorage;
@@ -32,7 +36,9 @@ public class ReviewDbStorage implements ReviewStorage {
     @Override
     public Optional<Review> findById(int id) {
         try {
-            return jdbcTemplate.queryForObject(BASE_SELECT + " where r.rev_id = ?",
+            return jdbcTemplate.queryForObject(
+                    BASE_SELECT.replace("<WHERE>", " where r.rev_id = ?")
+                            .replace("<LIMIT>", ""),
                     (rs, rn) -> Optional.of(ReviewConverter.fromResultSet(rs)),
                     id);
         } catch (EmptyResultDataAccessException ex) {
@@ -42,17 +48,26 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public List<Review> findByFilmIdLimited(int filmId, int count) {
-        return jdbcTemplate.query(BASE_SELECT + " where r.film_film_id = ? order by r.rev_id limit ?",
-                ReviewConverter::listFromResultSet,
+        return jdbcTemplate.query(
+                BASE_SELECT.replace("<WHERE>", "where r.film_film_id = ?")
+                        .replace("<LIMIT>", "limit ?"),
+                (rs, rn) -> ReviewConverter.fromResultSet(rs),
                 filmId,
                 count);
     }
 
     @Override
     public List<Review> findAllLimitedTo(int count) {
-        return jdbcTemplate.query(BASE_SELECT + " order by r.rev_id limit ?",
-                ReviewConverter::listFromResultSet,
-                count);
+        try {
+            return jdbcTemplate.query(
+                    BASE_SELECT.replace("<WHERE>", "")
+                            .replace("<LIMIT>", "limit ?"),
+                    (rs, rn) -> ReviewConverter.fromResultSet(rs),
+                    count);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     @Override

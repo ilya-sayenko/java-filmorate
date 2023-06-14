@@ -10,8 +10,6 @@ import ru.yandex.practicum.filmorate.model.impl.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
-import static ru.yandex.practicum.filmorate.log.LogMessage.*;
-
 @Service
 @Slf4j
 @Component("DirectorServiceImpl")
@@ -32,7 +30,7 @@ public class DirectorServiceImpl extends AbstractService<Director> implements Di
     @Override
     public Director create(Director director) {
         Director createdDirector = directorStorage.create(director);
-        log.info(DIRECTOR_IS_CREATED.getMessage());
+        log.info("Director is created");
         return createdDirector;
     }
 
@@ -40,7 +38,7 @@ public class DirectorServiceImpl extends AbstractService<Director> implements Di
     public Director update(Director director) {
         try {
             Director updatedDirector = super.update(director);
-            log.info(DIRECTOR_IS_UPDATED.getMessage());
+            log.info("Director is updated");
             return updatedDirector;
         } catch (ModelNotFoundException ex) {
             throw new DirectorNotFoundException(director.getId());
@@ -50,6 +48,6 @@ public class DirectorServiceImpl extends AbstractService<Director> implements Di
     @Override
     public void removeDirector(Integer directorId) {
         directorStorage.removeDirector(directorId);
-        log.info(DIRECTOR_IS_REMOVED.getMessage());
+        log.info("Director is removed");
     }
 }

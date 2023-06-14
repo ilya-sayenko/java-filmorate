@@ -1,10 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl.db;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -20,6 +15,11 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.DirectorConverter;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.FilmConverter;
 import ru.yandex.practicum.filmorate.storage.impl.db.converter.GenreConverter;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -191,6 +191,7 @@ public class FilmDbStorage implements FilmStorage {
                 "       DENSE_RANK () over(ORDER BY fl.cnt_likes DESC , f.film_id) rnk, " +
                 "       fl.cnt_likes, " +
                 "       f.*, " +
+                "       f.name film_name, " +
                 "       m.name mpa_name, " +
                 "       g.genre_id, " +
                 "       g.name genre_name, " +
@@ -218,8 +219,7 @@ public class FilmDbStorage implements FilmStorage {
                 "       on d.director_id = fd.director_id " +
                 "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
                 "              ) t ";
-
-StringBuilder sb = new StringBuilder(sql);
+        StringBuilder sb = new StringBuilder(sql);
 
         if (!listBy.isEmpty()) {
             sb.append(" where ");

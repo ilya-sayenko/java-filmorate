@@ -218,16 +218,17 @@ public class FilmDbStorage implements FilmStorage {
                 "       on d.director_id = fd.director_id " +
                 "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
                 "              ) t ";
-        StringBuilder sb = new StringBuilder(sql);
-
         if (!listBy.isEmpty()) {
-            sb.append(" where 1 = 1 ");
+            sb.append(" where ");
         }
         if (listBy.contains("title")) {
-            sb.append(" or t.name like '%").append(query.toLowerCase()).append("%'");
+            sb.append(" lower(t.film_name) like '%").append(query.toLowerCase()).append("%'");
         }
         if (listBy.contains("director")) {
-            sb.append(" or t.director_name like '%").append(query.toLowerCase()).append("%'");
+            if (listBy.size() > 1) {
+                sb.append(" or ");
+            }
+            sb.append(" lower(t.director_name) like '%").append(query.toLowerCase()).append("%'");
         }
 
         return jdbcTemplate.query(sb.toString(), FilmConverter::listFromResultSet);

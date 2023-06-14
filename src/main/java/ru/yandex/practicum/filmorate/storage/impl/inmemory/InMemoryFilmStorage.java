@@ -37,6 +37,11 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
     }
 
     @Override
+    public List<Film> search(String query, List<String> listBy) {
+        return null;
+    }
+
+    @Override
     public List<Film> getCommon(int userId, int friendId) {
         return null;
     }
@@ -48,6 +53,5 @@ public class InMemoryFilmStorage extends InMemoryAbstractStorage<Film> implement
 
     @Override
     public void deleteFilmById(int filmId) {
-
     }
 }

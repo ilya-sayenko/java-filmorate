@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.impl.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 import static ru.yandex.practicum.filmorate.log.LogMessage.*;
@@ -28,6 +29,13 @@ public class FilmController {
     public Film findById(@PathVariable int id) {
         log.info(FIND_FILM_BY_ID.getMessage());
         return filmService.findById(id);
+    }
+
+    @GetMapping("/search")
+    public Collection<Film> search(@RequestParam(name = "query") String query,
+                                   @RequestParam(name = "by") List<String> listBy) {
+        log.info(SEARCH.getMessage());
+        return filmService.search(query, listBy);
     }
 
     @PostMapping

@@ -15,5 +15,7 @@ public interface FilmService extends Service<Film> {
 
     List<Film> getByDirector(int directorId, String sortBy);
 
+    List<Film> search(String query, List<String> listBy);
+
     void deleteFilmById(int filmId);
 }

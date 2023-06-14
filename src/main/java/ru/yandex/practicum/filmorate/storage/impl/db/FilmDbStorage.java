@@ -218,6 +218,9 @@ public class FilmDbStorage implements FilmStorage {
                 "       on d.director_id = fd.director_id " +
                 "   order by coalesce(fl.cnt_likes, 0) desc, f.film_id, g.genre_id " +
                 "              ) t ";
+
+StringBuilder sb = new StringBuilder(sql);
+
         if (!listBy.isEmpty()) {
             sb.append(" where ");
         }

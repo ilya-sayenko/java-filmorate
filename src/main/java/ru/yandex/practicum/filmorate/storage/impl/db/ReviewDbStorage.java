@@ -58,16 +58,11 @@ public class ReviewDbStorage implements ReviewStorage {
 
     @Override
     public List<Review> findAllLimitedTo(int count) {
-        try {
-            return jdbcTemplate.query(
-                    BASE_SELECT.replace("<WHERE>", "")
-                            .replace("<LIMIT>", "limit ?"),
-                    (rs, rn) -> ReviewConverter.fromResultSet(rs),
-                    count);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        return jdbcTemplate.query(
+                BASE_SELECT.replace("<WHERE>", "")
+                        .replace("<LIMIT>", "limit ?"),
+                (rs, rn) -> ReviewConverter.fromResultSet(rs),
+                count);
     }
 
     @Override

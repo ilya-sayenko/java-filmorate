@@ -35,6 +35,10 @@ public class Film implements Model {
     @EqualsAndHashCode.Exclude
     private Set<Genre> genres = new HashSet<>();
 
+    @Builder.Default
+    @EqualsAndHashCode.Exclude
+    private Set<Director> directors = new HashSet<>();
+
     @EqualsAndHashCode.Exclude
     private Mpa mpa;
 }
